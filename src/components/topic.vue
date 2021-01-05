@@ -36,7 +36,7 @@
             rows="5"
             @keydown.enter="saveComment()"
           >
-          <v-icon @click="saveComment()" slot="append" color="success">mdi-plus-circle</v-icon>
+          <v-icon @click="saveComment()" slot="append" color="success" :disabled="loadSaveCommentStatus" >mdi-plus-circle</v-icon>
           </v-textarea>
         </div>
       </div>
@@ -78,7 +78,8 @@ import Axios from 'axios'
         topic: {},
         member: {},
         profileUrl: sessionStorage.getItem('profileUrl'),
-        comment: null
+        comment: null,
+        loadSaveCommentStatus: false
       }
     },
     created () {
@@ -116,6 +117,10 @@ import Axios from 'axios'
       },
       async saveComment() {
         try {
+          this.loadSaveCommentStatus = true
+          if (!this.comment) {
+            throw { messages: 'กรุณากรอกข้อความที่ต้องการแสดงความคิดเห็น' }
+          }
           const { comments } = this.topic
           const commentPayload = {
             name: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
@@ -133,9 +138,12 @@ import Axios from 'axios'
             throw { messages: 'ไม่สามารถเพิ่มความคิดเห็นได้กรุณาลองใหม่อีกครั้ง' }
           }
           this.comment = null
+          this.loadSaveCommentStatus = false
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
+          this.comment = null
+          this.loadSaveCommentStatus = false
         }
       }
     },
