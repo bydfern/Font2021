@@ -145,6 +145,7 @@ import Axios from 'axios'
 <style lang="scss" scoped>
   .container {
     max-width: 800px;
+    margin: auto;
   }
   .profile {
     display: flex;

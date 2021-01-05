@@ -64,5 +64,7 @@
 </script>
 
 <style scoped>
-
+  .v-card {
+    max-width: 1200px;
+  }
 </style>
