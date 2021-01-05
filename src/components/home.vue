@@ -2,7 +2,7 @@
   <div>
     <menu-bar></menu-bar>
     <div class="container">
-      <v-card class="mx-auto">
+      <v-card class="mx-auto my-3">
         <v-card-title>กระทู้ทั้งหมด</v-card-title>
         <v-card-text>
           <v-simple-table>
