@@ -13,7 +13,7 @@
         <v-text-field label="คณะ" v-model="profileData.faculty" prepend-icon="mdi-city" @keypress.enter="register()" />
         <v-text-field label="สาขา" v-model="profileData.department" prepend-icon="mdi-home-city" @keypress.enter="register()" />
         <v-btn rounded class="px-15 mx-5 my-8" color="success" @click="save()" :loading="loadStatus" :disabled="loadStatus" >บันทึก</v-btn>
-        <v-btn rounded class="px-15" color="error" @click="toHomePage()">ยกเลิก</v-btn>
+        <v-btn rounded class="px-15" color="error" @click="toHomePage()">กลับ</v-btn>
         </v-card-text>
       </v-card>
     </div>
@@ -23,6 +23,7 @@
 <script>
   import Axios from 'axios'
   import MenuBar from './menu-bar.vue'
+  //import firebase from 'firebase'
 
   export default {
     components: {
@@ -31,11 +32,13 @@
     data() {
       return {
         profileData: {},
+        newPassword: null,
+        confirmNewPassword: null,
         rules: {
           require: value => !!value || 'จำเป็นต้องกรอกข้อมูล',
           min6: value => value.length >= 6 || 'ต้องมีความยาวอย่างน้อย 6 ตัว'
         },
-        loadStatus: false,
+        loadStatus: false
       }
     },
     methods: {

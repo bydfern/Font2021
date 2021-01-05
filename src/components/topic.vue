@@ -20,6 +20,48 @@
           <span>{{member.firstName}} {{member.lastName}}</span>
         </div>
       </div>
+      <hr class="my-5">
+      <h2 class="my-3">แสดงความคิดเห็น</h2>
+      <div class="comment my-5">
+        <div class="profile-image">
+          <img :src="profileUrl" width="100%" height="auto">
+        </div>
+        <div class="message mx-3">
+          <v-textarea
+            placeholder="ข้อความ"
+            v-model="comment"
+            clearable
+            solo
+            auto-grow
+            rows="5"
+            @keydown.enter="saveComment()"
+          >
+          <v-icon @click="saveComment()" slot="append" color="success">mdi-plus-circle</v-icon>
+          </v-textarea>
+        </div>
+      </div>
+      <div>
+        <h2 class="my-3">ความคิดเห็น</h2>
+        <span class="mx-3" v-if="topic.comments.length == 0" >ไม่มีความคิดเห็นตอนนี้</span>
+        <div v-for="(comment, index) in topic.comments" :key="index">
+          <div class="comment">
+            <div class="profile-image my-1">
+              <img :src="comment.imageUrl" width="100%" height="auto">
+            </div>
+            <div class="message mx-3">
+              <span><b>{{comment.name}}</b></span>
+              <v-textarea
+                v-model="comment.message"
+                solo
+                auto-grow
+                readonly
+                rows="2"
+              >
+              </v-textarea>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -34,7 +76,9 @@ import Axios from 'axios'
     data() {
       return {
         topic: {},
-        member: {}
+        member: {},
+        profileUrl: sessionStorage.getItem('profileUrl'),
+        comment: null
       }
     },
     created () {
@@ -69,6 +113,30 @@ import Axios from 'axios'
         })
 
         return member
+      },
+      async saveComment() {
+        try {
+          const { comments } = this.topic
+          const commentPayload = {
+            name: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+            email: sessionStorage.getItem('email'),
+            imageUrl: sessionStorage.getItem('profileUrl'),
+            message: this.comment
+          }
+          comments.push(commentPayload)
+          const updatedComment = await Axios({
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.$route.params.id}`,
+            data: { comments }
+          })
+          if (!updatedComment) {
+            throw { messages: 'ไม่สามารถเพิ่มความคิดเห็นได้กรุณาลองใหม่อีกครั้ง' }
+          }
+          this.comment = null
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+        }
       }
     },
   }
@@ -90,5 +158,13 @@ import Axios from 'axios'
   .profile-contact {
     display: flex;
     flex-direction: column;
+  }
+  .comment {
+    display: flex;
+    flex-direction: row;
+  }
+  .message {
+    width: 100%;
+    max-width: 100%;
   }
 </style>

@@ -56,6 +56,8 @@
           sessionStorage.setItem('email', this.email)
           sessionStorage.setItem('profileUrl', memberData.data[0].profileUrl)
           sessionStorage.setItem('memberId', memberData.data[0]._id)
+          sessionStorage.setItem('firstName', memberData.data[0].firstName)
+          sessionStorage.setItem('lastName', memberData.data[0].lastName)
           this.$router.replace({ name: 'home' })
         } catch (error) {
           this.loadStatus = false
