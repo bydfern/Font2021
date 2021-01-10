@@ -58,6 +58,16 @@
           sessionStorage.setItem('memberId', memberData.data[0]._id)
           sessionStorage.setItem('firstName', memberData.data[0].firstName)
           sessionStorage.setItem('lastName', memberData.data[0].lastName)
+          this.$swal({
+            text: 'เข้าสู่ระบบสำเร็จ',
+            icon: 'success',
+            iconColor: 'white',
+            toast: true,
+            position: 'top',
+            background: '#44b348',
+            showConfirmButton: false,
+            timer: 1500
+          })
           this.$router.replace({ name: 'home' })
         } catch (error) {
           this.loadStatus = false

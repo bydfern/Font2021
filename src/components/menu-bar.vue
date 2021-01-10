@@ -16,6 +16,7 @@
         <v-list>
           <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
           <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
+          <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -24,6 +25,7 @@
 
 <script>
   import firebase from 'firebase'
+import Axios from 'axios'
 
   export default {
     data() {
@@ -54,6 +56,43 @@
       },
       toEditProfile() {
         this.$router.push({ name: 'editProfile' })
+      },
+      async removeMember() {
+        try {
+          const { isConfirmed } = await this.$swal({
+              title: 'ยืนยัน',
+              text: 'คุณต้องการลบบัญชีผู้ใช้นี้หรือไม่',
+              icon: 'warning',
+              showConfirmButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'ลบ',
+              cancelButtonText: 'ยกเลิก',
+              confirmButtonColor: '#d14529'
+            })
+          if (isConfirmed) {
+            const deletedMember = await Axios({
+              method: 'DELETE',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`
+            })
+            if (!deletedMember) {
+              throw { messages: 'ไม่สามารถลบบัญชีผู้ใช้ได้' }
+            }
+            this.$swal({
+              text: 'ลบบัญชีสำเร็จ',
+              icon: 'success',
+              iconColor: 'white',
+              toast: true,
+              position: 'top',
+              background: '#44b348',
+              showConfirmButton: false,
+              timer: 1500
+            })
+            this.$router.replace({ name: 'login' })
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+        }
       }
     },
   }

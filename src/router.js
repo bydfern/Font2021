@@ -7,6 +7,7 @@ import CreateTopic from './components/create-topic.vue'
 import Topic from './components/topic.vue'
 import MyTopic from './components/my-topic.vue'
 import EditProfile from './components/edit-profile.vue'
+import EditTopic from './components/edit-topic.vue'
 
 
 Vue.use(Router)
@@ -48,6 +49,11 @@ export default new Router({
       name: 'editProfile',
       path: '/edit-profile',
       component: EditProfile
+    },
+    {
+      name: 'editTopic',
+      path: '/edit-topic/:id',
+      component: EditTopic
     }
   ],
 })
