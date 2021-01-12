@@ -8,54 +8,72 @@
           <v-text-field label="วิชา" v-model="subject" />
           <v-text-field label="หัวข้อ" v-model="title" />
           <div id="contain" v-for="(item, index) in content" :key="index">
-              <v-textarea
-                placeholder="ข้อความ"
-                v-if="item.type == 'text'"
-                v-model="content[index].value"
-                :readonly="item.readonly"
-                :filled="item.readonly"
-                :clearable="item.readonly == false"
-                solo
-                auto-grow
-                rows="2"
+            <v-textarea
+              placeholder="ข้อความ"
+              v-if="item.type == 'text'"
+              v-model="content[index].value"
+              :readonly="item.readonly"
+              :filled="item.readonly"
+              :clearable="item.readonly == false"
+              solo
+              auto-grow
+              rows="2"
+            >
+            <v-icon @click="content[index].readonly = true"  slot="append" color="success" v-if="item.readonly == false">mdi-plus-circle</v-icon>
+            <v-icon @click="content[index].readonly = false" slot="append" color="#FBC02D">mdi-pencil-circle</v-icon>
+            <v-icon @click="content.splice(index, 1)" slot="append" color="red">mdi-minus-circle</v-icon>
+            </v-textarea>
+            <v-file-input
+              accept="image/*"
+              placeholder="เลือกรูป"
+              label="รูปภาพ"
+              v-model="item.imageData"
+              show-size="true"
+              v-if="item.type == 'image' && item.value == ''"
+              :loading="item.loadStatus"
+              :disabled="item.loadStatus"
+            >
+              <v-icon @click="saveImage(item, index)"  slot="append" color="success" :disabled="item.loadStatus">mdi-plus-circle</v-icon>
+              <v-icon @click="content.splice(index, 1)" slot="append" color="red" :disabled="item.loadStatus">mdi-minus-circle</v-icon>
+            </v-file-input>
+            <div class="image">
+              <v-img
+                v-if="item.type == 'image' && item.value != ''"
+                :src="item.value"
+                class="mx-auto my-1"
+                min-width="400px"
+                min-height="200px"
+                max-height="800px"
+                max-width="400px"
+                width="50%"
+                height="50%"
+                style="position: absouly;"
               >
-              <v-icon @click="content[index].readonly = true"  slot="append" color="success" v-if="item.readonly == false">mdi-plus-circle</v-icon>
-              <v-icon @click="content[index].readonly = false" slot="append" color="#FBC02D">mdi-pencil-circle</v-icon>
-              <v-icon @click="content.splice(index, 1)" slot="append" color="red">mdi-minus-circle</v-icon>
-              </v-textarea>
-              <v-file-input
-                accept="image/*"
-                placeholder="เลือกรูป"
-                label="รูปโปรไฟล์"
-                v-model="item.imageData"
-                show-size="true"
-                v-if="item.type == 'image' && item.value == ''"
-                :loading="item.loadStatus"
-                :disabled="item.loadStatus"
-              >
-                <v-icon @click="saveImage(item, index)"  slot="append" color="success" :disabled="item.loadStatus">mdi-plus-circle</v-icon>
-                <v-icon @click="content.splice(index, 1)" slot="append" color="red" :disabled="item.loadStatus">mdi-minus-circle</v-icon>
-              </v-file-input>
-              <div class="image">
-                <v-img
-                  v-if="item.type == 'image' && item.value != ''"
-                  :src="item.value"
-                  class="mx-auto my-1"
-                  min-width="400px"
-                  min-height="200px"
-                  max-height="800px"
-                  max-width="400px"
-                  width="50%"
-                  height="50%"
-                  style="position: absouly;"
-                >
-                </v-img>
-                <v-btn v-if="item.type == 'image' && item.value != ''" color="error" block @click="deleteImage(item, index)" class="mb-3">X</v-btn>
-              </div>
+              </v-img>
+              <v-btn v-if="item.type == 'image' && item.value != ''" color="error" block @click="deleteImage(item, index)" class="mb-3">X</v-btn>
+            </div>
+            <v-file-input
+              placeholder="เลือกไฟล์"
+              label="ไฟล์แนบ"
+              v-model="item.fileData"
+              show-size="true"
+              v-if="item.type == 'file' && item.value == ''"
+              :loading="item.loadStatus"
+              :disabled="item.loadStatus"
+            >
+              <v-icon @click="saveFile(item, index)"  slot="append" color="success" :disabled="item.loadStatus">mdi-plus-circle</v-icon>
+              <v-icon @click="content.splice(index, 1)" slot="append" color="red" :disabled="item.loadStatus">mdi-minus-circle</v-icon>
+            </v-file-input>
+            <div class="file">
+              <v-icon class="mx-1 my-2" v-if="item.type == 'file' && item.value != ''">mdi-file-document-outline</v-icon>
+              <a v-if="item.type == 'file' && item.value != ''" :href="item.value">{{item.name}}</a>
+              <v-btn v-if="item.type == 'file' && item.value != ''" color="error" x-small @click="deleteFile(item, index)" class="my-2 mx-2">X</v-btn>
+            </div>
           </div>
           <div style="width: 100%;">
             <v-icon @click="addTextContent()" color="blue">mdi-plus-circle</v-icon>
             <v-icon class="mx-3" @click="addImageContent()" color="blue">mdi-image-plus</v-icon>
+            <v-icon @click="addFileContent()" color="blue">mdi-file-plus</v-icon>
           </div>
         </v-card-text>
         <v-card-actions style="width: 100%;">
@@ -102,6 +120,15 @@
           loadStatus: false
         })
       },
+      addFileContent() {
+        this.content.push({
+          type: 'file',
+          value: '',
+          name: Date.now().toString(),
+          fileData: null,
+          loadStatus: false
+        })
+      },
       async saveImage(item, index) {
         this.content[index].loadStatus = true
         const imageRef = firebase.storage().ref(this.email).child('topic').child(item.name).put(item.imageData)
@@ -113,8 +140,24 @@
           delete this.content[index].loadStatus
         }
       },
+      async saveFile(item, index) {
+        item.name = item.fileData.name
+        this.content[index].loadStatus = true
+        const fileRef = firebase.storage().ref(this.email).child('topic').child(`${item.name}`).put(item.fileData)
+        const uploadComplete = await Promise.all([fileRef])
+        if (uploadComplete) {
+          this.content[index].value = await fileRef.snapshot.ref.getDownloadURL()
+          this.loadStatus = false
+          delete this.content[index].imageData
+          delete this.content[index].loadStatus
+        }
+      },
       async deleteImage(item, index) {
         console.log(index)
+        this.content.splice(index, 1)
+        firebase.storage().ref(this.email).child('topic').child(item.name).delete()
+      },
+      async deleteFile(item, index) {
         this.content.splice(index, 1)
         firebase.storage().ref(this.email).child('topic').child(item.name).delete()
       },

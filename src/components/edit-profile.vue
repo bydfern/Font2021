@@ -12,6 +12,7 @@
         <v-text-field label="มหาวิทยาลัย" v-model="profileData.university" prepend-icon="mdi-school" @keypress.enter="register()" />
         <v-text-field label="คณะ" v-model="profileData.faculty" prepend-icon="mdi-city" @keypress.enter="register()" />
         <v-text-field label="สาขา" v-model="profileData.department" prepend-icon="mdi-home-city" @keypress.enter="register()" />
+        <v-btn class="mx-5 my-3" rounded color="primary" @click="changePassword()" >เปลี่ยนรหัสผ่าน</v-btn><br>
         <v-btn rounded class="px-15 mx-5 my-8" color="success" @click="save()" :loading="loadStatus" :disabled="loadStatus" >บันทึก</v-btn>
         <v-btn rounded class="px-15" color="error" @click="toHomePage()">กลับ</v-btn>
         </v-card-text>
@@ -23,7 +24,7 @@
 <script>
   import Axios from 'axios'
   import MenuBar from './menu-bar.vue'
-  //import firebase from 'firebase'
+  import firebase from 'firebase'
 
   export default {
     components: {
@@ -69,6 +70,44 @@
           const messages = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', messages, 'error')
           this.loadStatus = false
+        }
+      },
+      async changePassword() {
+        try {
+          const result = await this.$swal({
+            title: 'เปลี่ยนรหัสผ่าน',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ตกลง',
+            cancelButtonText: 'ยกเลิก',
+            html:
+              '<input id="password" class="swal2-input" type="password" placeholder="รหัสผ่านใหม่" >' +
+              '<input id="rePassword" class="swal2-input" type="password" placeholder="รหัสผ่านใหม่อีกครั้ง" >',
+            focusConfirm: true,
+            preConfirm: () => {
+              return [
+                document.getElementById('password').value,
+                document.getElementById('rePassword').value
+              ]
+            }
+          })
+          if (result.isConfirmed) {
+            const { value: [newPassword, reNewPassword] } = result
+            if (newPassword !== reNewPassword) {
+              throw { messages: 'ยืนยันรหัสผ่านไม่ตรงกัน' }
+            }
+            if (newPassword.length < 6) {
+              throw { message: 'รหัสผ่านน้อยกว่า 6 ตัว' }
+            }
+            const updatedPassword = firebase.auth().currentUser.updatePassword(newPassword)
+            if (!updatedPassword) {
+              throw { messgaes: 'กรุณาลองใหม่อีกครั้ง' }
+            }
+            this.$swal('สำเร็จ', 'เปลี่ยนรหัสผ่านสำเร็จ', 'success')
+          }
+        } catch (error) {
+          const messages = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', messages, 'error')
         }
       }
     },

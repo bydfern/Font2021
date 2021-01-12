@@ -8,6 +8,7 @@
       <div v-for="(item, index) in topic.content" :key="index">
         <p v-if="item.type == 'text'">{{item.value}}</p>
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
+        <v-icon v-if="item.type == 'file'">mdi-file-document-outline</v-icon><a v-if="item.type == 'file'" :href="item.value">{{item.name}}</a>
       </div>
       <hr class="my-5">
       <div class="profile">
