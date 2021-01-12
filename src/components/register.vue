@@ -3,15 +3,15 @@
     <v-card class="mx-auto mt-3">
       <v-card-title>สมัครสมาชิก</v-card-title>
       <v-card-text>
-        <v-text-field label="ชื่อ" :rules="[rules.require]" v-model="firstName" prepend-icon="mdi-account-circle" />
-        <v-text-field label="นามสกุล" :rules="[rules.require]" v-model="lastName" prepend-icon="mdi-account-circle" />
+        <v-text-field label="ชื่อ*" :rules="[rules.require]" v-model="firstName" prepend-icon="mdi-account-circle" />
+        <v-text-field label="นามสกุล*" :rules="[rules.require]" v-model="lastName" prepend-icon="mdi-account-circle" />
         <v-text-field label="วันเกิด" v-model="birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" />
         <v-text-field label="มหาวิทยาลัย" v-model="university" prepend-icon="mdi-school" />
         <v-text-field label="คณะ" v-model="faculty" prepend-icon="mdi-city" />
         <v-text-field label="สาขา" v-model="department" prepend-icon="mdi-home-city" />
-        <v-text-field label="อีเมล" :rules="[rules.require]" prepend-icon="mdi-email" v-model="email" />
+        <v-text-field label="อีเมล*" :rules="[rules.require]" prepend-icon="mdi-email" v-model="email" />
         <v-text-field
-          label="รหัสผ่าน"
+          label="รหัสผ่าน*"
           :rules="[rules.require, rules.min6]"
           v-model="password"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -21,7 +21,7 @@
           @keypress.enter="register()"
         />
         <v-text-field
-          label="ยืนยันรหัสผ่าน"
+          label="ยืนยันรหัสผ่าน*"
           :rules="[rules.require, rules.min6]"
           v-model="confirmPassword"
           :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
