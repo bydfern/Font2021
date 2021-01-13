@@ -5,6 +5,14 @@
       <v-card class="mx-auto my-3">
         <v-card-title>แก้ไขโปรไฟล์</v-card-title>
         <v-card-text>
+        <div>
+          <img v-if="!imageStatus && newProfileUrl" :src="newProfileUrl" class="profile mx-8">
+          <img v-if="!imageStatus && !newProfileUrl" :src="profileData.profileUrl" class="profile mx-8">
+        </div>
+        <v-btn class="mx-8 mb-3" v-if="!imageStatus" @click="imageStatus = !imageStatus">เปลี่ยนรูปโปรไฟล์</v-btn>
+        <v-file-input v-if="imageStatus" accept="image/*" placeholder="เลือกรูป" label="รูปโปรไฟล์" prepend-icon="mdi-camera" v-model="imageData" show-size="true">
+        </v-file-input>
+        <v-btn v-if="imageStatus" class="mx-8 mb-3" @click="uploadImage()" :loading="loadImageStatus" :disabled="loadImageStatus" >อัพโหลด</v-btn>
         <v-text-field label="อีเมล" :rules="[rules.require]" prepend-icon="mdi-email" v-model="profileData.email" @keypress.enter="register()" />
         <v-text-field label="ชื่อ" :rules="[rules.require]" v-model="profileData.firstName" prepend-icon="mdi-account-circle" @keypress.enter="register()" />
         <v-text-field label="นามสกุล" :rules="[rules.require]" v-model="profileData.lastName" prepend-icon="mdi-account-circle" @keypress.enter="register()" />
@@ -35,11 +43,15 @@
         profileData: {},
         newPassword: null,
         confirmNewPassword: null,
+        imageStatus: false,
+        imageData: null,
+        newProfileUrl: null,
         rules: {
           require: value => !!value || 'จำเป็นต้องกรอกข้อมูล',
           min6: value => value.length >= 6 || 'ต้องมีความยาวอย่างน้อย 6 ตัว'
         },
-        loadStatus: false
+        loadStatus: false,
+        loadImageStatus: false
       }
     },
     methods: {
@@ -56,6 +68,9 @@
       async save() {
         try {
           this.loadStatus = true
+          if (this.newProfileUrl) {
+            this.profileData.profileUrl = this.newProfileUrl
+          }
           const updatedProfile = await Axios({
             method: 'PATCH',
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
@@ -65,6 +80,7 @@
             throw { messages: 'ไม่สามารถอัพเดตข้อมูลได้' }
           }
           this.loadStatus = false
+          sessionStorage.setItem('profileUrl', this.newProfileUrl)
           this.$swal('สำเร็จ', 'อัพเดตข้อมูลสำเร็จ', 'success')
         } catch (error) {
           const messages = (error.messages) ? error.messages : error.message
@@ -109,6 +125,25 @@
           const messages = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', messages, 'error')
         }
+      },
+      async uploadImage() {
+        try {
+          this.loadImageStatus = true
+          if (!this.imageData) {
+            throw { messages: 'กรุณาเลือกรูป' }
+          }
+          const profileImageName = Date.now().toString()
+          const imageRef = firebase.storage().ref(this.profileData.email).child('profile').child(profileImageName).put(this.imageData)
+          const uploadComplete = await Promise.all([imageRef])
+          if (uploadComplete) {
+            this.newProfileUrl = await imageRef.snapshot.ref.getDownloadURL()
+          }
+          this.imageStatus = false
+          this.loadImageStatus = false
+        } catch (error) {
+          const messages = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', messages, 'error')
+        }
       }
     },
     created () {
@@ -120,5 +155,9 @@
 <style scoped>
   .v-card {
     max-width: 800px;
+  }
+  .profile {
+    max-width: 150px;
+    max-height: 150px;
   }
 </style>

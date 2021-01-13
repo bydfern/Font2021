@@ -17,6 +17,7 @@
         />
         <v-btn rounded block color="success" @click="login()" :loading="loadStatus" :disabled="loadStatus" >เข้าสู่ระบบ</v-btn><br>
         <router-link :to="{ name: 'register' }">สมัครสมาชิก</router-link>
+        <a class="mx-3" @click="resetPassword()">ลืมรหัสผ่าน</a>
       </v-card-text>
     </v-card>
   </div>
@@ -73,6 +74,20 @@
           this.loadStatus = false
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
+        }
+      },
+      async resetPassword () {
+        const result = await this.$swal({
+          title: 'ลืมรหัสผ่าน',
+          text: 'กรุณากรอก email',
+          showCancelButton: true,
+          confirmButtonText: 'ตกลง',
+          cancelButtonText: 'ยกเลิก',
+          input: 'email'
+        })
+        if (result.isConfirmed) {
+          firebase.auth().sendPasswordResetEmail(result.value)
+          this.$swal('สำเร็จ', 'กรุณาตรวจสอบ email เพื่อเปลี่ยนรหัสผ่าน', 'success')
         }
       }
     },
