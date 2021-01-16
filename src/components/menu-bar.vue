@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-app-bar dense dark>
+      <img class="mx-3" src="../../public/book-icon.png" height="30px" width="30px">
       <v-toolbar-title>Education space</v-toolbar-title>
       <v-spacer/>
       <img :src="profileUrl" width="40px;" height="40px;">
