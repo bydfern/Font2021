@@ -22,6 +22,11 @@
         </div>
       </div>
       <hr class="my-5">
+      <h2 class="my-3">ถูกใจ</h2>
+      <div class="like">
+        <v-icon large @click="like()" :color="likeColor" >mdi-hand-heart</v-icon>
+        <b class="mx-3 pt-2">{{topic.like.length}} คน</b>
+      </div>
       <h2 class="my-3">แสดงความคิดเห็น</h2>
       <div class="comment my-5">
         <div class="profile-image">
@@ -80,7 +85,8 @@ import Axios from 'axios'
         member: {},
         profileUrl: sessionStorage.getItem('profileUrl'),
         comment: null,
-        loadSaveCommentStatus: false
+        loadSaveCommentStatus: false,
+        likeColor: 'gray'
       }
     },
     created () {
@@ -97,6 +103,9 @@ import Axios from 'axios'
             throw { messages: 'ไม่พบกระทู้นี้' }
           }
           this.topic = topic
+          if (topic.like.includes(sessionStorage.getItem('memberId'))) {
+            this.likeColor = 'red'
+          }
           const memberData = await this.getMember(topic.memberId)
           if (!memberData) {
             throw { messages: 'ไม่พบเจ้าของกระทู้' }
@@ -146,6 +155,22 @@ import Axios from 'axios'
           this.comment = null
           this.loadSaveCommentStatus = false
         }
+      },
+      async like() {
+        const memberId = sessionStorage.getItem('memberId')
+        if (this.topic.like.includes(memberId)) {
+          const index = this.topic.like.findIndex(id => id == memberId)
+          this.topic.like.splice(index, 1)
+          this.likeColor = 'gray'
+        } else {
+          this.topic.like.push(memberId)
+          this.likeColor = 'red'
+        }
+        Axios({
+          method: 'PATCH',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
+          data: { like: this.topic.like }
+        })
       }
     },
   }
@@ -176,5 +201,11 @@ import Axios from 'axios'
   .message {
     width: 100%;
     max-width: 100%;
+  }
+  .like {
+    height: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
   }
 </style>
