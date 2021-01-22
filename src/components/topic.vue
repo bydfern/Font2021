@@ -42,8 +42,32 @@
             rows="5"
             @keydown.enter="saveComment()"
           >
-          <v-icon @click="saveComment()" slot="append" color="success" :disabled="loadSaveCommentStatus" >mdi-plus-circle</v-icon>
+            <v-icon @click="saveComment()" slot="append" color="success" :disabled="loadSaveCommentStatus" >mdi-plus-circle</v-icon>
           </v-textarea>
+          <div class="filePreview" v-for="(attr, index) in attachment" :key="index">
+            <img v-if="attr.type === 'image'" :src="attr.imageUrl" class="imageComment">
+            <v-icon v-if="attr.type == 'file'">mdi-file-document-outline</v-icon><a v-if="attr.type === 'file'" :href="attr.fileUrl">{{attr.name}}</a>
+            <v-btn color="error" block @click="deleteAttachment(attr, index)" class="mb-3">X</v-btn>
+          </div>
+          <div class="actionBtn">
+            <v-file-input
+              accept="image/*"
+              show-size="true"
+              prepend-icon="mdi-image-plus"
+              multiple
+              v-model="images"
+              @change="uploadImage()"
+            />
+            <v-file-input
+              accept="*"
+              show-size="true"
+              prepend-icon="mdi-file-plus"
+              class="mx-8"
+              multiple
+              v-model="files"
+              @change="uploadFile()"
+            />
+          </div>
         </div>
       </div>
       <div>
@@ -64,6 +88,10 @@
                 rows="2"
               >
               </v-textarea>
+              <div v-for="(attr, index) in comment.attachment" :key="index">
+                <img v-if="attr.type === 'image'" :src="attr.imageUrl" class="imageComment">
+                <v-icon v-if="attr.type == 'file'">mdi-file-document-outline</v-icon><a v-if="attr.type === 'file'" :href="attr.fileUrl">{{attr.name}}</a>
+              </div>
             </div>
           </div>
         </div>
@@ -73,8 +101,10 @@
 </template>
 
 <script>
-import Axios from 'axios'
+  import Axios from 'axios'
   import MenuBar from './menu-bar.vue'
+  import firebase from 'firebase'
+
   export default {
     components: {
       MenuBar,
@@ -86,7 +116,12 @@ import Axios from 'axios'
         profileUrl: sessionStorage.getItem('profileUrl'),
         comment: null,
         loadSaveCommentStatus: false,
-        likeColor: 'gray'
+        likeColor: 'gray',
+        images: [],
+        files: [],
+        attachment: [],
+        numberImages: 0,
+        numberFiles: 0
       }
     },
     created () {
@@ -136,7 +171,8 @@ import Axios from 'axios'
             name: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
             email: sessionStorage.getItem('email'),
             imageUrl: sessionStorage.getItem('profileUrl'),
-            message: this.comment
+            message: this.comment,
+            attachment: this.attachment
           }
           comments.push(commentPayload)
           const updatedComment = await Axios({
@@ -148,6 +184,7 @@ import Axios from 'axios'
             throw { messages: 'ไม่สามารถเพิ่มความคิดเห็นได้กรุณาลองใหม่อีกครั้ง' }
           }
           this.comment = null
+          this.attachment = []
           this.loadSaveCommentStatus = false
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
@@ -171,6 +208,78 @@ import Axios from 'axios'
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
           data: { like: this.topic.like }
         })
+      },
+      async uploadImage() {
+        try {
+          const images = this.images
+          this.images = []
+          if ((images.length + this.numberImages) > 5) {
+            throw { messages: 'จำนวนของภาพเกินกำหนด' }
+          }
+          this.loadSaveCommentStatus = true
+          const task = []
+          images.map(image => {
+            task.push(firebase.storage().ref(sessionStorage.getItem('email')).child('comment').child(Date.now().toString()).put(image))
+          })
+          const uploadComplete = await Promise.all(task)
+          if (uploadComplete) {
+            task.map(async imageRef => {
+              const payload = {
+                type: 'image',
+                name: imageRef.snapshot.ref.name,
+                imageUrl: await imageRef.snapshot.ref.getDownloadURL()
+              }
+              this.attachment.push(payload)
+            })
+          }
+          this.numberImages += images.length
+          this.loadSaveCommentStatus = false
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+          this.loadSaveCommentStatus = false
+        }
+      },
+      async uploadFile() {
+        try {
+          const files = this.files
+          this.files = []
+          if ((files.length + this.numberFiles) > 5) {
+            throw { messages: 'จำนวนของไฟล์เกินกำหนด' }
+          }
+          this.loadSaveCommentStatus = true
+          const task = []
+          files.map(file => {
+            task.push(firebase.storage().ref(sessionStorage.getItem('email')).child('comment').child(file.name).put(file))
+          })
+          const uploadComplete = await Promise.all(task)
+          console.log(uploadComplete)
+          if (uploadComplete) {
+            task.map(async fileRef => {
+              const payload = {
+                type: 'file',
+                name: fileRef.snapshot.ref.name,
+                fileUrl: await fileRef.snapshot.ref.getDownloadURL()
+              }
+              this.attachment.push(payload)
+            })
+          }
+          this.numberFiles += files.length
+          this.loadSaveCommentStatus = false
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+          this.loadSaveCommentStatus = false
+        }
+      },
+      async deleteAttachment(attr, index) {
+        this.attachment.splice(index, 1)
+        if (attr.type === 'image') {
+          -- this.numberImages
+        } else {
+          -- this.numberFiles
+        }
+        firebase.storage().ref(sessionStorage.getItem('email')).child('comment').child(attr.name).delete()
       }
     },
   }
@@ -207,5 +316,20 @@ import Axios from 'axios'
     width: 100%;
     display: flex;
     flex-direction: row;
+  }
+  .actionBtn {
+    width: 0px;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    flex-direction: row;
+    transform: translate(0, -45px);
+  }
+  .imageComment {
+    max-width: 400px;
+    max-height: 200px;
+  }
+  .filePreview {
+    transform: translate(0, -20px);
   }
 </style>
