@@ -78,6 +78,7 @@ import Axios from 'axios'
             if (!deletedMember) {
               throw { messages: 'ไม่สามารถลบบัญชีผู้ใช้ได้' }
             }
+            await firebase.auth().currentUser.delete()
             this.$swal({
               text: 'ลบบัญชีสำเร็จ',
               icon: 'success',
