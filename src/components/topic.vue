@@ -27,6 +27,10 @@
         <v-icon large @click="like()" :color="likeColor" >mdi-hand-heart</v-icon>
         <b class="mx-3 pt-2">{{topic.like.length}} คน</b>
       </div>
+      <div class="favorite">
+        <h3 class="mt-5">เพิ่มเป็นรายการโปรด</h3>
+        <v-icon class="mt-4 mx-2" large @click="favorite()" :color="favoriteColor" >mdi-star</v-icon>
+      </div>
       <h2 class="my-3">แสดงความคิดเห็น</h2>
       <div class="comment my-5">
         <div class="profile-image">
@@ -114,9 +118,11 @@
         topic: {},
         member: {},
         profileUrl: sessionStorage.getItem('profileUrl'),
+        profile: {},
         comment: null,
         loadSaveCommentStatus: false,
         likeColor: 'gray',
+        favoriteColor: 'gray',
         images: [],
         files: [],
         attachment: [],
@@ -126,6 +132,7 @@
     },
     created () {
       this.getTopicData()
+      this.getProfile()
     },
     methods: {
       async getTopicData() {
@@ -159,6 +166,13 @@
         })
 
         return member
+      },
+      async getProfile() {
+        const profileData = await this.getMember(sessionStorage.getItem('memberId'))
+        if (profileData.favorite.includes(this.topic._id)) {
+          this.favoriteColor = '#FCE205'
+        }
+        this.profile = profileData
       },
       async saveComment() {
         try {
@@ -207,6 +221,21 @@
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
           data: { like: this.topic.like }
+        })
+      },
+      favorite() {
+        const favorite = this.profile.favorite
+        if (favorite.includes(this.topic._id)) {
+          this.favoriteColor = 'gray'
+          this.profile.favorite = favorite.filter(id => id !== this.topic._id)
+        } else {
+          this.favoriteColor = '#FCE205'
+          favorite.push(this.topic._id)
+        }
+        Axios({
+          method: 'PATCH',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${this.profile._id}`,
+          data: { favorite }
         })
       },
       async uploadImage() {
@@ -331,5 +360,9 @@
   }
   .filePreview {
     transform: translate(0, -20px);
+  }
+  .favorite {
+    display: flex;
+    flex-direction: row;
   }
 </style>

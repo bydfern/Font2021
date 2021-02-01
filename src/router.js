@@ -8,6 +8,7 @@ import Topic from './components/topic.vue'
 import MyTopic from './components/my-topic.vue'
 import EditProfile from './components/edit-profile.vue'
 import EditTopic from './components/edit-topic.vue'
+import Favorite from './components/favorite.vue'
 
 
 Vue.use(Router)
@@ -54,6 +55,11 @@ export default new Router({
       name: 'editTopic',
       path: '/edit-topic/:id',
       component: EditTopic
+    },
+    {
+      name: 'favorite',
+      path: '/favorite',
+      component: Favorite
     }
   ],
 })

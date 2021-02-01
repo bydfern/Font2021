@@ -8,6 +8,7 @@
       <p class="my-auto mx-3">{{email}}</p>
       <div class="vl mx-2"></div>
       <v-btn @click="toHome()">หน้าหลัก</v-btn>
+      <v-btn @click="toFavorite()">รายการโปรด</v-btn>
       <v-btn @click="toCreateTopic()">สร้างกระทู้</v-btn>
       <v-btn @click="toMyTopic()">กระทู้ของฉัน</v-btn>
       <v-menu bottom left>
@@ -57,6 +58,9 @@ import Axios from 'axios'
       },
       toEditProfile() {
         this.$router.push({ name: 'editProfile' })
+      },
+      toFavorite() {
+        this.$router.push({ name: 'favorite' })
       },
       async removeMember() {
         try {
