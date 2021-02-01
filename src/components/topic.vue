@@ -230,12 +230,12 @@
           this.profile.favorite = favorite.filter(id => id !== this.topic._id)
         } else {
           this.favoriteColor = '#FCE205'
-          favorite.push(this.topic._id)
+          this.profile.favorite.push(this.topic._id)
         }
         Axios({
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${this.profile._id}`,
-          data: { favorite }
+          data: { favorite: this.profile.favorite }
         })
       },
       async uploadImage() {

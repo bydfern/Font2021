@@ -54,9 +54,9 @@
           if (!firebaseData.user) {
             throw { message: 'การเข้าสู่ระบบมีปัญหากรุณาลองใหม่อีกครั้ง' }
           }
-          // if (!firebase.auth().currentUser.emailVerified) {
-          //   throw { messages: 'กรุณายืนยันอีเมลก่อนเข้าใช้งาน' }
-          // }
+          if (!firebase.auth().currentUser.emailVerified) {
+            throw { messages: 'กรุณายืนยันอีเมลก่อนเข้าใช้งาน' }
+          }
           sessionStorage.setItem('email', this.email)
           sessionStorage.setItem('profileUrl', memberData.data[0].profileUrl)
           sessionStorage.setItem('memberId', memberData.data[0]._id)
