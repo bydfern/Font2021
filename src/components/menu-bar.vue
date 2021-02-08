@@ -18,6 +18,7 @@
         <v-list>
           <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
           <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
+          <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
           <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
         </v-list>
       </v-menu>
@@ -33,7 +34,8 @@ import Axios from 'axios'
     data() {
       return {
         email: sessionStorage.getItem('email'),
-        profileUrl: sessionStorage.getItem('profileUrl')
+        profileUrl: sessionStorage.getItem('profileUrl'),
+        role: sessionStorage.getItem('role')
       }
     },
     methods: {
@@ -99,6 +101,9 @@ import Axios from 'axios'
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
         }
+      },
+      toReport() {
+        this.$router.push({ name: 'report' })
       }
     },
   }

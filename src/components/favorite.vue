@@ -30,12 +30,12 @@
               </tr>
             </tbody>
           </v-simple-table>
-          <div class="paginate">
+          <!-- <div class="paginate">
             <div class="mr-5" style="width: 50px; margin-left: auto;">
               <v-select :items="[10, 30, 50]" v-model="pageSize" @change="query()"></v-select>
             </div>
             <v-pagination class="my-2" :length="totalPage" v-model="currentPage" @input="query()"></v-pagination>
-          </div>
+          </div> -->
         </v-card-text>
       </v-card>
     </div>

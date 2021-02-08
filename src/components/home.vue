@@ -8,7 +8,7 @@
           <div class="dataQuery">
             <v-text-field placeholder="ค้นหา" style="width: 50%;" outlined prepend-inner-icon="mdi-magnify" v-model="search" clearable @input="query()" />
             <v-select class="mx-2" :items="sortByItems" outlined v-model="sortBy" @change="query()" />
-            <v-select :items="sortOrderItems" outlined v-model="sortOrder" @change="query()" />
+            <v-select style="width: 20px;" :items="sortOrderItems" outlined v-model="sortOrder" @change="query()" />
           </div>
           <v-simple-table>
             <thead>
@@ -63,8 +63,8 @@
         ],
         sortBy: 'createdAt',
         sortOrderItems: [
-          { text: 'มาก -> น้อย', value: -1 },
-          { text: 'น้อย -> มาก', value: 1 }
+          { text: '▲', value: -1 },
+          { text: '▼', value: 1 }
         ],
         sortOrder: -1,
         search: '',

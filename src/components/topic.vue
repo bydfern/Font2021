@@ -2,7 +2,11 @@
   <div>
     <menu-bar></menu-bar>
     <div class="container my-5">
-      <h1>{{topic.title}}</h1>
+      <div class="title-box">
+        <h1>{{topic.title}}</h1>
+        <v-icon v-if="role === 'member'" color="red" @click="report()">mdi-alert</v-icon>
+        <v-icon v-if="role === 'admin'" color="red" @click="removeTopic()">mdi-delete</v-icon>
+      </div>
       <h3>{{topic.subject}}</h3>
       <hr class="my-5">
       <div v-for="(item, index) in topic.content" :key="index">
@@ -127,7 +131,8 @@
         files: [],
         attachment: [],
         numberImages: 0,
-        numberFiles: 0
+        numberFiles: 0,
+        role: sessionStorage.getItem('role')
       }
     },
     created () {
@@ -141,7 +146,7 @@
             method: 'GET',
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.$route.params.id}`
           })
-          if (!topic) {
+          if (!topic || topic.status !== 1) {
             throw { messages: 'ไม่พบกระทู้นี้' }
           }
           this.topic = topic
@@ -309,6 +314,80 @@
           -- this.numberFiles
         }
         firebase.storage().ref(sessionStorage.getItem('email')).child('comment').child(attr.name).delete()
+      },
+      async report() {
+        try {
+          const reportData = await this.$swal({
+            title: 'รายงาน',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'รายงาน',
+            cancelButtonText: 'ยกเลิก',
+            html:
+            '<input type="radio" id="typeReport" name="typeReport" value="0" checked>' + ' กระทู้' + '&nbsp;' + '&nbsp;' + '&nbsp;' +
+            '<input type="radio" id="typeReport" name="typeReport" value="1">' + ' เจ้าของกระทู้' +
+            '<textarea id="reason" class="swal2-input" type="textarea" placeholder="เหตุผล" style="height: 170px;">',
+            preConfirm: () => {
+              return {
+                typeReport: document.getElementById('typeReport').value,
+                reason: document.getElementById('reason').value
+              }
+            }
+          })
+          if (reportData.isConfirmed) {
+            const { typeReport, reason } = reportData.value
+            if (!reason) {
+              throw { messages: 'กรุณาบอกเหตุผลที่ต้องการแจ้งรายงาน' }
+            }
+            const targetId = (typeReport) ? this.topic._id : this.member._id
+            const result = await Axios({
+              method: 'POST',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/reports`,
+              data: {
+                reporterId: sessionStorage.getItem('memberId'),
+                typeReport,
+                targetId,
+                reason
+              }
+            })
+            if (!result) {
+              throw { messages: 'ไม่สามารถรายงานได้กรุณาลองใหม่อีกครั้ง' }
+            }
+            this.$swal('สำเร็จ', 'แจ้งรายงานสำเร็จแล้วรอการตรวจสอบ', 'success')
+          }
+          
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+        }
+      },
+      async removeTopic() {
+        try {
+          const { isConfirmed } = await this.$swal({
+            title: 'ยืนยัน',
+            text: 'คุณต้องการลบกระทู้นี้หรือไม่',
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#d14529'
+          })
+          if (isConfirmed) {
+            const deletedTopic = await Axios({
+              method: 'DELETE',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`
+            })
+            if (!deletedTopic) {
+              throw { messages: 'ลบกระทู้ไม่สำเร็จ' }
+            }
+            this.$router.replace({ name: 'home' })
+            this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ', 'success')
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด',  message, 'error')
+        }
       }
     },
   }
@@ -364,5 +443,11 @@
   .favorite {
     display: flex;
     flex-direction: row;
+  }
+  .title-box {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 </style>
