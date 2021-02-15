@@ -23,9 +23,10 @@
           <span>{{member.email}}</span>
           <hr>
           <span>{{member.firstName}} {{member.lastName}}</span>
+          <span>{{member.rank}}</span>
         </div>
       </div>
-      <hr class="my-5">
+      <hr class="my-7">
       <h2 class="my-3">ถูกใจ</h2>
       <div class="like">
         <v-icon large @click="like()" :color="likeColor" >mdi-hand-heart</v-icon>
@@ -88,6 +89,7 @@
             </div>
             <div class="message mx-3">
               <span><b>{{comment.name}}</b></span>
+              <span class="mx-2">{{comment.rank}}</span>
               <v-textarea
                 v-model="comment.message"
                 solo
@@ -112,6 +114,7 @@
   import Axios from 'axios'
   import MenuBar from './menu-bar.vue'
   import firebase from 'firebase'
+  import Helper from '../helper/helper'
 
   export default {
     components: {
@@ -132,7 +135,8 @@
         attachment: [],
         numberImages: 0,
         numberFiles: 0,
-        role: sessionStorage.getItem('role')
+        role: sessionStorage.getItem('role'),
+        helper: new Helper()
       }
     },
     created () {
@@ -149,6 +153,26 @@
           if (!topic || topic.status !== 1) {
             throw { messages: 'ไม่พบกระทู้นี้' }
           }
+          const membersId = []
+          topic.comments.map(comment => {
+            membersId.push(comment.memberId)
+          })
+          const { data: membersCommentData } = await Axios({
+            method: 'POST',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/comments-member`,
+            data: { membersId }
+          })
+          const comments = topic.comments.map(comment => {
+            const memberData = membersCommentData.find(data => data._id === comment.memberId)
+            return {
+              name: `${memberData.firstName} ${memberData.lastName}`,
+              email: memberData.email,
+              imageUrl: memberData.profileUrl,
+              rank: this.helper.showRank(memberData.exp),
+              ...comment
+            }
+          })
+          topic.comments = comments
           this.topic = topic
           if (topic.like.includes(sessionStorage.getItem('memberId'))) {
             this.likeColor = 'red'
@@ -158,6 +182,7 @@
             throw { messages: 'ไม่พบเจ้าของกระทู้' }
           }
           this.member = memberData
+          this.member.rank = this.helper.showRank(memberData.exp)
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
@@ -187,13 +212,15 @@
           }
           const { comments } = this.topic
           const commentPayload = {
-            name: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
-            email: sessionStorage.getItem('email'),
-            imageUrl: sessionStorage.getItem('profileUrl'),
+            memberId: sessionStorage.getItem('memberId'),
             message: this.comment,
             attachment: this.attachment
           }
-          comments.push(commentPayload)
+          comments.push({
+            name: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+            imageUrl: sessionStorage.getItem('profileUrl'),
+            ...commentPayload
+          })
           const updatedComment = await Axios({
             method: 'PATCH',
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.$route.params.id}`,
@@ -202,6 +229,13 @@
           if (!updatedComment) {
             throw { messages: 'ไม่สามารถเพิ่มความคิดเห็นได้กรุณาลองใหม่อีกครั้ง' }
           }
+          const exp = Number(sessionStorage.getItem('exp')) + 3
+          sessionStorage.setItem('exp', exp)
+          Axios({
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
+            data: { exp }
+          })
           this.comment = null
           this.attachment = []
           this.loadSaveCommentStatus = false
@@ -226,6 +260,13 @@
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
           data: { like: this.topic.like }
+        })
+        const exp = Number(sessionStorage.getItem('exp')) + 1
+        sessionStorage.setItem('exp', exp)
+        Axios({
+          method: 'PATCH',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${memberId}`,
+          data: { exp }
         })
       },
       favorite() {

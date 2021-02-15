@@ -189,6 +189,13 @@
           if (!result) {
             throw { messages: 'มีปัญหาขณะบันทึกข้อมูลกรุณาลองใหม่อีกครั้ง' }
           }
+          const exp = Number(sessionStorage.getItem('exp')) + 5
+          sessionStorage.setItem('exp', exp)
+          Axios({
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
+            data: { exp }
+          })
           this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ', 'success')
           this.$router.push({ name: 'home' })
         } catch (error) {
