@@ -93,6 +93,7 @@
           if (!firebaseResults) {
             throw { messages: 'การสร้างข้อมูลมีปัญหากรุณาลองใหม่อีกครั้ง' }
           }
+          firebase.auth().currentUser.sendEmailVerification()
           const memberPayload = {
             firstName: this.firstName,
             lastName: this.lastName,
@@ -101,6 +102,7 @@
             faculty: this.faculty,
             department: this.department,
             email: this.email,
+            profileUrl: 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/public%2Fphoto_2021-01-22_20-13-35.jpg?alt=media&token=1be8c3d8-31fc-4c94-9562-b97e7cedf1a2'
           }
           if (this.imageData !== null) {
             const profileImageName = Date.now().toString()
@@ -118,7 +120,7 @@
           if (!createdMember) {
             throw { messages: 'การสร้างข้อมูลมีปัญหากรุณาลองใหม่อีกครั้ง' }
           }
-          this.$swal('สำเร็จ', 'คุณสมัครสมาชิกสำเร็จ', 'success')
+          this.$swal('สำเร็จ', 'กรุณาตรวจสอบอีเมลเพื่อยืนยัน', 'success')
           this.$router.replace({ name: 'login' })
         } catch (error) {
           const messages = (error.messages) ? error.messages : error.message

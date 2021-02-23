@@ -1,75 +1,250 @@
 <template>
-  <div class="bodyy">
+  <div>
     <menu-bar></menu-bar>
-    <div class="container">
-      <v-card class="mx-auto my-3">
-        <v-card-title>กระทู้ทั้งหมด</v-card-title>
-        <v-card-text>
-          <v-simple-table>
-            <thead>
-              <tr>
-                <th style="width: 40%;">เรื่อง</th>
-                <th style="width: 40%">วิชา</th>
-                <th style="width: 20%;">เจ้าของกระทู้</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(topic, index) in topics" :key="index" @click="$router.push(`/topic/${topic._id}`)">
-                <td>{{topic.title}}</td>
-                <td>{{topic.subject}}</td>
-                <td>{{topic.memberEmail}}</td>
-              </tr>
-            </tbody>
-          </v-simple-table>
-        </v-card-text>
-      </v-card>
+    <div class="bodyy">
+      <!-- <div class="container"> -->
+      <div class="row">
+        <div class="col-3">
+          <v-card>
+            <v-img height="150px" src="" >
+              <v-card-title class="white--text mt-8">
+                <v-avatar size="56">
+                  <img
+                    alt="user"
+                    src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+                  />
+                </v-avatar>
+                <p class="ml-3" style="color:black">
+                  User name
+                </p>
+              </v-card-title>
+            </v-img>
 
-      
+            <v-card-text>
+              <div class="font-weight-bold ml-8 mb-2">
+                Event
+              </div>
+
+              <v-timeline align-top dense>
+                <v-timeline-item
+                  v-for="message in event"
+                  :key="message.startDate"
+                  small
+                >
+                  <div>
+                    <div class="font-weight-normal">
+                      <strong>{{ message.name }}</strong> @{{ message.startDate }}
+                    </div>
+                    <div>{{ message.detail }}</div>
+                  </div>
+                </v-timeline-item>
+              </v-timeline>
+            </v-card-text>
+          </v-card>
+        </div>
+        <!-- //----------------------------------------------------------------------------------- -->
+        <div class="col-9">
+          <div class="row">
+            <div class="col-12">
+              <v-carousel height="300" class="rounded-card">
+                <v-carousel-item
+                  v-for="(item, i) in event"
+                  :key="i"
+                  :src="item.posterUrl"
+                  reverse-transition="fade-transition"
+                  transition="fade-transition"
+                ></v-carousel-item>
+              </v-carousel>
+            </div>
+            <!-- <div class="cal-4" style="background-color: #fff">
+              
+            </div> -->
+          </div>
+          <br />
+          <v-card class="mx-auto" max-width="100%">
+            <v-card-title>กระทู้ทั้งหมด</v-card-title>
+            <v-card-text>
+              <div class="dataQuery">
+                <v-text-field
+                  placeholder="ค้นหา"
+                  style="width: 50%;"
+                  outlined
+                  prepend-inner-icon="mdi-magnify"
+                  v-model="search"
+                  clearable
+                  @input="query()"
+                />
+                <v-select
+                  class="mx-2"
+                  :items="sortByItems"
+                  outlined
+                  v-model="sortBy"
+                  @change="query()"
+                />
+                <v-select
+                  style="width: 20px;"
+                  :items="sortOrderItems"
+                  outlined
+                  v-model="sortOrder"
+                  @change="query()"
+                />
+              </div>
+              <v-simple-table>
+                <thead>
+                  <tr>
+                    <th style="width: 30%;">เรื่อง</th>
+                    <th style="width: 30%">วิชา</th>
+                    <th style="width: 10%">ถูกใจ</th>
+                    <th style="width: 20%;">เจ้าของกระทู้</th>
+                    <th style="width: 10%">สร้างเมื่อ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(topic, index) in topics"
+                    :key="index"
+                    @click="$router.push(`/topic/${topic._id}`)"
+                  >
+                    <td>{{ topic.title }}</td>
+                    <td>{{ topic.subject }}</td>
+                    <td>{{ topic.like.length }}</td>
+                    <td>{{ topic.memberEmail }}</td>
+                    <td>{{ formatDate(topic.createdAt) }}</td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+              <div class="paginate">
+                <div class="mr-5" style="width: 50px; margin-left: auto;">
+                  <v-select
+                    :items="[10, 30, 50]"
+                    v-model="pageSize"
+                    @change="query()"
+                  ></v-select>
+                </div>
+                <v-pagination
+                  class="my-2"
+                  :length="totalPage"
+                  v-model="currentPage"
+                  @input="query()"
+                ></v-pagination>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- </div> -->
 </template>
 
 <script>
-  import Axios from 'axios'
-  import MenuBar from './menu-bar.vue'
+import Axios from "axios";
+import MenuBar from "./menu-bar.vue";
+import moment from "moment";
 
-  export default {
-    components: {
-      MenuBar
+export default {
+  components: {
+    MenuBar,
+  },
+  data() {
+    return {
+      email: sessionStorage.getItem("email"),
+      topics: [],
+      sortByItems: [
+        { text: "เรื่อง", value: "title" },
+        { text: "วิชา", value: "subject" },
+        { text: "ถูกใจ", value: "like" },
+        { text: "วันที่โพส", value: "createdAt" },
+      ],
+      sortBy: "createdAt",
+      sortOrderItems: [
+        { text: "▲", value: -1 },
+        { text: "▼", value: 1 },
+      ],
+      sortOrder: -1,
+      search: "",
+      pageSize: 10,
+      currentPage: 1,
+      totalPage: 1,
+      event: [],
+    };
+  },
+  created() {
+    this.getTopics();
+    this.getEvent3();
+  },
+  methods: {
+    async getTopics() {
+      const { data: topicsResult } = await Axios({
+        method: "GET",
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics?$sort[createdAt]=-1`,
+      });
+      this.topics = topicsResult.data;
+      this.totalPage = Math.ceil(topicsResult.total / this.pageSize);
     },
-    data() {
-      return {
-        email: sessionStorage.getItem('email'),
-        topics: []
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY HH:mm:ss");
+    },
+    async query() {
+      const skip = (this.currentPage - 1) * this.pageSize;
+      if (!this.search) {
+        this.search = "";
       }
+      const search = `$or[0][title][$regex]=${this.search}&$or[1][subject][$regex]=${this.search}&$or[2][memberEmail][$regex]=${this.search}`;
+      const { data: topicsResult } = await Axios({
+        method: "GET",
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics?$sort[${this.sortBy}]=${this.sortOrder}&${search}&$limit=${this.pageSize}&$skip=${skip}`,
+      });
+      this.topics = topicsResult.data;
+      this.totalPage = Math.ceil(topicsResult.total / this.pageSize);
     },
-    created () {
-      this.getTopics()
-    },
-    methods: {
-      async getTopics() {
-        const { data: topicsResult } = await Axios({
-          method: 'GET',
-          url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics`
-        })
-        this.topics = topicsResult.data
-      }
-    },
-  }
+    async getEvent3() {
+      const { data: eventRe } = await Axios({
+        method: "GET",
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?$limit=3`,
+      });
+      this.event = eventRe.data;
+    }
+  },
+};
 </script>
 
 <style scoped>
-  .v-card {
-    max-width: 1000px;
-  }
-  .bodyy{
-    /* display: flex; */
-    font-family: 'lato', sans-serif;
-    color: #fff;
-    background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
-    min-height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat; 
-    background-position: center center;
-  }
+.v-card {
+  max-width: 1000px;
+}
+.bodyy {
+  display: flex;
+  font-family: "lato", sans-serif;
+  color: #fff;
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
+  min-height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 0px 50px 0px 50px;
+}
+.dataQuery {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.paginate {
+  width: 50%;
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+}
+.menu-bar {
+  position: fixed;
+}
+.rounded-card {
+  border-radius: 10px;
+}
+.bg{
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+}
 </style>

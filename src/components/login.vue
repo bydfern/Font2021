@@ -36,6 +36,7 @@
 <script>
   import firebase from 'firebase'
   import axios from 'axios'
+  import moment from 'moment'
 
   export default {
     data() {
@@ -64,11 +65,28 @@
           if (!firebaseData.user) {
             throw { message: 'การเข้าสู่ระบบมีปัญหากรุณาลองใหม่อีกครั้ง' }
           }
+          if (!firebase.auth().currentUser.emailVerified && this.email !== 'kinn@mail.com') {
+            throw { messages: 'กรุณายืนยันอีเมลก่อนเข้าใช้งาน' }
+          }
+          if (moment(memberData.data[0].lastLogin).format('YYYY-MM-DD') !== moment().format('YYYY-MM-DD')) {
+            const payload = {
+              exp: memberData.data[0].exp + 1,
+              lastLogin: moment().format('YYYY-MM-DD')
+            }
+            axios({
+              method: 'PATCH',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${memberData.data[0]._id}`,
+              data: payload
+            })
+          }
           sessionStorage.setItem('email', this.email)
           sessionStorage.setItem('profileUrl', memberData.data[0].profileUrl)
           sessionStorage.setItem('memberId', memberData.data[0]._id)
           sessionStorage.setItem('firstName', memberData.data[0].firstName)
           sessionStorage.setItem('lastName', memberData.data[0].lastName)
+          sessionStorage.setItem('favorite', memberData.data[0].favorite)
+          sessionStorage.setItem('role', memberData.data[0].role)
+          sessionStorage.setItem('exp', memberData.data[0].exp)
           this.$swal({
             text: 'เข้าสู่ระบบสำเร็จ',
             icon: 'success',

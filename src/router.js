@@ -9,6 +9,9 @@ import MyTopic from './components/my-topic.vue'
 import EditProfile from './components/edit-profile.vue'
 import EditTopic from './components/edit-topic.vue'
 import Neen from './components/neen.vue'
+import Favorite from './components/favorite.vue'
+import Report from './components/report.vue'
+
 
 Vue.use(Router)
 
@@ -59,6 +62,16 @@ export default new Router({
       name: 'Neen',
       path: '/neen',
       component: Neen
+    },
+    {
+      name: 'favorite',
+      path: '/favorite',
+      component: Favorite
+    },
+    {
+      name: 'report',
+      path: '/report',
+      component: Report
     }
   ],
 })

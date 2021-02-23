@@ -1,12 +1,14 @@
 <template>
   <div>
     <v-app-bar dense dark>
+      <img class="mx-3" src="../../public/book-icon.png" height="30px" width="30px">
       <v-toolbar-title>Education space</v-toolbar-title>
       <v-spacer/>
       <img :src="profileUrl" width="40px;" height="40px;">
       <p class="my-auto mx-3">{{email}}</p>
       <div class="vl mx-2"></div>
       <v-btn @click="toHome()">หน้าหลัก</v-btn>
+      <v-btn @click="toFavorite()">รายการโปรด</v-btn>
       <v-btn @click="toCreateTopic()">สร้างกระทู้</v-btn>
       <v-btn @click="toMyTopic()">กระทู้ของฉัน</v-btn>
       <v-menu bottom left>
@@ -16,6 +18,7 @@
         <v-list>
           <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
           <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
+          <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
           <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
         </v-list>
       </v-menu>
@@ -31,7 +34,8 @@ import Axios from 'axios'
     data() {
       return {
         email: sessionStorage.getItem('email'),
-        profileUrl: sessionStorage.getItem('profileUrl')
+        profileUrl: sessionStorage.getItem('profileUrl'),
+        role: sessionStorage.getItem('role')
       }
     },
     methods: {
@@ -57,6 +61,9 @@ import Axios from 'axios'
       toEditProfile() {
         this.$router.push({ name: 'editProfile' })
       },
+      toFavorite() {
+        this.$router.push({ name: 'favorite' })
+      },
       async removeMember() {
         try {
           const { isConfirmed } = await this.$swal({
@@ -77,6 +84,7 @@ import Axios from 'axios'
             if (!deletedMember) {
               throw { messages: 'ไม่สามารถลบบัญชีผู้ใช้ได้' }
             }
+            await firebase.auth().currentUser.delete()
             this.$swal({
               text: 'ลบบัญชีสำเร็จ',
               icon: 'success',
@@ -93,6 +101,9 @@ import Axios from 'axios'
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
         }
+      },
+      toReport() {
+        this.$router.push({ name: 'report' })
       }
     },
   }
@@ -102,5 +113,6 @@ import Axios from 'axios'
   .vl {
     border-left: 2px solid whitesmoke;
     height: 40px;
+    
   }
 </style>
