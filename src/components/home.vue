@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bodyy">
     <menu-bar></menu-bar>
     <div class="container">
       <v-card class="mx-auto my-3">
@@ -23,6 +23,8 @@
           </v-simple-table>
         </v-card-text>
       </v-card>
+
+      
     </div>
   </div>
 </template>
@@ -59,5 +61,15 @@
 <style scoped>
   .v-card {
     max-width: 1000px;
+  }
+  .bodyy{
+    /* display: flex; */
+    font-family: 'lato', sans-serif;
+    color: #fff;
+    background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat; 
+    background-position: center center;
   }
 </style>

@@ -1,26 +1,36 @@
 <template>
+<div class="badyy">
   <div class="container">
-    <v-card class="mx-auto">
-      <v-card-title>ลงชื่อเข้าใช้</v-card-title>
+    <!-- <v-card class="mx-auto"> -->
+      <v-card-title><p style="color:white">ลงชื่อเข้าใช้</p></v-card-title>
       <v-card-text>
-        <v-text-field label="อีเมล" v-model="email" outlined rounded prepend-icon="mdi-email" @keypress.enter="login()" />
+        <v-text-field label="อีเมล" v-model="email"  outlined
+          rounded 
+          color="white"
+          prepend-icon="mdi-email" @keypress.enter="login()">
+          <v-icon slot="prepend" color=" white"> mdi-email</v-icon>
+        </v-text-field>
         <v-text-field
           label="รหัสผ่าน"
           outlined
           rounded
           v-model="password"
+          color="black"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :type="showPassword ? 'text' : 'password'"
           @click:append="showPassword = !showPassword"
           prepend-icon="mdi-key"
           @keypress.enter="login()"
         />
-        <v-btn rounded block color="success" @click="login()" :loading="loadStatus" :disabled="loadStatus" >เข้าสู่ระบบ</v-btn><br>
-        <router-link :to="{ name: 'register' }">สมัครสมาชิก</router-link>
-        <a class="mx-3" @click="resetPassword()">ลืมรหัสผ่าน</a>
+        <v-btn rounded block color="gray" @click="login()" :loading="loadStatus" :disabled="loadStatus" >เข้าสู่ระบบ</v-btn><br>
+        <router-link :to="{ name: 'register' }"><v-btn text color="teal accent-4"> สมัครสมาชิก </v-btn></router-link>
+        <v-btn text color="teal accent-4" class="mx-3" @click="resetPassword()">ลืมรหัสผ่าน</v-btn>
       </v-card-text>
-    </v-card>
+    <!-- </v-card> -->
   </div>
+</div>
+
+
 </template>
 
 <script>
@@ -69,7 +79,7 @@
             showConfirmButton: false,
             timer: 1500
           })
-          this.$router.replace({ name: 'home' })
+          this.$router.replace({ name: 'home' }) //คำสั่งเปลี่ยนหน้า  name จาก rout
         } catch (error) {
           this.loadStatus = false
           const message = (error.messages) ? error.messages : error.message
@@ -96,15 +106,35 @@
 
 <style scoped>
   .container {
-    height: 100%;
-    text-align: center;
-    background-color: #ededed;
-    max-width: 100%;
+    /* height: 100%; */
+    /* text-align: center;
+    background-color: #ededed; 
+    max-width: 100%; */
+    background:rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1.5px 0 0 rgba(52, 52, 52, 0.2);
+    /* background:rgba(255, 172, 202, 0.5); */
+    /* box-shadow: 0 1.5px 0 0 rgba(255, 255, 255, 0.1); */
+    border-radius: 50px;
+    width:450px;
+    display: flex;  
+    flex-direction: column;
   }
-
+  .badyy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'lato', sans-serif;
+    color: #fff;
+    background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat; 
+    background-position: center center;
+  }
   .v-card {
     max-width: 800px;
     top: 45%;
     transform: translate(0, -50%);
   }
+  
 </style>

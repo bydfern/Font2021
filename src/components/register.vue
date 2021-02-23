@@ -135,10 +135,16 @@
 
 <style scoped>
   .container {
+    padding-top: 80px;
     height: 100%;
     text-align: center;
-    background-color: #ededed;
+    background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
+    /* background-color: #ededed; */
     max-width: 100%;
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
   }
 
   .v-card {
