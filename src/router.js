@@ -8,7 +8,6 @@ import Topic from './components/topic.vue'
 import MyTopic from './components/my-topic.vue'
 import EditProfile from './components/edit-profile.vue'
 import EditTopic from './components/edit-topic.vue'
-import Neen from './components/neen.vue'
 import Favorite from './components/favorite.vue'
 import Report from './components/report.vue'
 
@@ -57,11 +56,6 @@ export default new Router({
       name: 'editTopic',
       path: '/edit-topic/:id',
       component: EditTopic
-    },
-    {
-      name: 'Neen',
-      path: '/neen',
-      component: Neen
     },
     {
       name: 'favorite',
