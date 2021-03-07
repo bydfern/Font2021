@@ -1,42 +1,45 @@
 <template>
-  <div class="container">
-    <v-card class="mx-auto mt-3">
-      <v-card-title>สมัครสมาชิก</v-card-title>
-      <v-card-text>
-        <v-text-field label="ชื่อ*" :rules="[rules.require]" v-model="firstName" prepend-icon="mdi-account-circle" />
-        <v-text-field label="นามสกุล*" :rules="[rules.require]" v-model="lastName" prepend-icon="mdi-account-circle" />
-        <v-text-field label="วันเกิด" v-model="birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" />
-        <v-text-field label="มหาวิทยาลัย" v-model="university" prepend-icon="mdi-school" />
-        <v-text-field label="คณะ" v-model="faculty" prepend-icon="mdi-city" />
-        <v-text-field label="สาขา" v-model="department" prepend-icon="mdi-home-city" />
-        <v-text-field label="อีเมล*" :rules="[rules.require]" prepend-icon="mdi-email" v-model="email" />
-        <v-text-field
-          label="รหัสผ่าน*"
-          :rules="[rules.require, rules.min6]"
-          v-model="password"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showPassword ? 'text' : 'password'"
-          @click:append="showPassword = !showPassword"
-          prepend-icon="mdi-key"
-          @keypress.enter="register()"
-        />
-        <v-text-field
-          label="ยืนยันรหัสผ่าน*"
-          :rules="[rules.require, rules.min6]"
-          v-model="confirmPassword"
-          :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showConfirmPassword ? 'text' : 'password'"
-          @click:append="showConfirmPassword = !showConfirmPassword"
-          prepend-icon="mdi-key"
-          @keypress.enter="register()"
-        />
-        <v-file-input accept="image/*" placeholder="เลือกรูป" label="รูปโปรไฟล์" prepend-icon="mdi-camera" v-model="imageData" show-size="true">
-        </v-file-input>
-        <v-btn rounded class="px-15 mx-5" color="success" large @click="register()" :loading="loadStatus" :disabled="loadStatus" >ตกลง</v-btn>
-        <v-btn rounded class="px-15" color="error" large @click="toLoginPage()">ยกเลิก</v-btn>
-      </v-card-text>
-    </v-card>
-  </div>
+  <!-- <div class="bodyy"> -->
+    <div class="container">
+      <v-card class="mx-auto mt-3">
+        <v-card-title>สมัครสมาชิก</v-card-title>
+        <v-card-text>
+          <v-text-field label="ชื่อ*" :rules="[rules.require]" v-model="firstName" prepend-icon="mdi-account-circle" />
+          <v-text-field label="นามสกุล*" :rules="[rules.require]" v-model="lastName" prepend-icon="mdi-account-circle" />
+          <v-text-field label="วันเกิด" v-model="birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" />
+          <v-text-field label="มหาวิทยาลัย" v-model="university" prepend-icon="mdi-school" />
+          <v-text-field label="คณะ" v-model="faculty" prepend-icon="mdi-city" />
+          <v-text-field label="สาขา" v-model="department" prepend-icon="mdi-home-city" />
+          <v-text-field label="อีเมล*" :rules="[rules.require]" prepend-icon="mdi-email" v-model="email" />
+          <v-text-field
+            label="รหัสผ่าน*"
+            :rules="[rules.require, rules.min6]"
+            v-model="password"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPassword ? 'text' : 'password'"
+            @click:append="showPassword = !showPassword"
+            prepend-icon="mdi-key"
+            @keypress.enter="register()"
+          />
+          <v-text-field
+            label="ยืนยันรหัสผ่าน*"
+            :rules="[rules.require, rules.min6]"
+            v-model="confirmPassword"
+            :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showConfirmPassword ? 'text' : 'password'"
+            @click:append="showConfirmPassword = !showConfirmPassword"
+            prepend-icon="mdi-key"
+            @keypress.enter="register()"
+          />
+          <v-file-input accept="image/*" placeholder="เลือกรูป" label="รูปโปรไฟล์" prepend-icon="mdi-camera" v-model="imageData" show-size="true">
+          </v-file-input>
+          <v-btn rounded class="px-15 mx-5" color="success" large @click="register()" :loading="loadStatus" :disabled="loadStatus" >ตกลง</v-btn>
+          <v-btn rounded class="px-15" color="error" large @click="toLoginPage()">ยกเลิก</v-btn>
+        </v-card-text>
+      </v-card>
+    </div>
+  <!-- </div> -->
+  
 </template>
 
 <script>
@@ -140,7 +143,7 @@
     padding-top: 80px;
     height: 100%;
     text-align: center;
-    background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
     /* background-color: #ededed; */
     max-width: 100%;
     min-height: 100%;
@@ -153,5 +156,18 @@
     max-width: 800px;
     top: 45%;
     transform: translate(0, -50%);
+  }
+
+  .bodyy {
+    padding-top: 80px;
+    display: flex;
+    font-family: "lato", sans-serif;
+    color: #fff;
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 0px 50px 0px 50px;
   }
 </style>

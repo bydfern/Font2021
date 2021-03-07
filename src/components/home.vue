@@ -11,11 +11,11 @@
                 <v-avatar size="56">
                   <img
                     alt="user"
-                    src="https://cdn.pixabay.com/photo/2020/06/24/19/12/cabbage-5337431_1280.jpg"
+                    :src="getProfile"
                   />
                 </v-avatar>
                 <p class="ml-3" style="color:black">
-                  User name
+                  {{getUser}}
                 </p>
               </v-card-title>
             </v-img>
@@ -27,8 +27,8 @@
 
               <v-timeline align-top dense>
                 <v-timeline-item
-                  v-for="message in event"
-                  :key="message.startDate"
+                  v-for="(message, index) in event"
+                  :key="`${message.startDate}-${index}`"
                   small
                 >
                   <div>
@@ -44,7 +44,7 @@
         </v-col>
         <v-col cols="9">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="8">
               <v-carousel height="300" class="rounded-card">
                 <v-carousel-item
                   v-for="(item, i) in event"
@@ -54,6 +54,21 @@
                   transition="fade-transition"
                 ></v-carousel-item>
               </v-carousel>
+            </v-col>
+            <v-col cols="4">
+              <br>
+              <v-card class="mx-auto" max-width="100%">
+                <v-card-title>Discover your Great Experience</v-card-title>
+                <v-card-text>
+                  <v-select
+                      style="width: 80%;"
+                      :items="sortDiscover"
+                      outlined
+                      v-model="sortOrder"
+                      @change="query()"
+                    />
+                </v-card-text>
+              </v-card>
             </v-col>
           </v-row>
           <br />
@@ -158,12 +173,20 @@ export default {
         { text: "▲", value: -1 },
         { text: "▼", value: 1 },
       ],
+      sortDiscover: [
+        { text: "New Event", value: -1 },
+        { text: "Popula", value: 1 },
+        { text: "Online Event", value: 2 },
+      ],
       sortOrder: -1,
       search: "",
       pageSize: 10,
       currentPage: 1,
       totalPage: 1,
       event: [],
+
+      getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+      getProfile : sessionStorage.getItem("profileUrl"),
     };
   },
   created() {
