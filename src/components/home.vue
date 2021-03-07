@@ -1,10 +1,10 @@
 <template>
   <div>
-    <menu-bar></menu-bar>
+    <menu-bar />
     <div class="bodyy">
       <!-- <div class="container"> -->
-      <div class="row">
-        <div class="col-3">
+      <v-row>
+        <v-col cols="3">
           <v-card>
             <v-img height="150px" src="" >
               <v-card-title class="white--text mt-8">
@@ -41,11 +41,10 @@
               </v-timeline>
             </v-card-text>
           </v-card>
-        </div>
-        <!-- //----------------------------------------------------------------------------------- -->
-        <div class="col-9">
-          <div class="row">
-            <div class="col-12">
+        </v-col>
+        <v-col cols="9">
+          <v-row>
+            <v-col cols="12">
               <v-carousel height="300" class="rounded-card">
                 <v-carousel-item
                   v-for="(item, i) in event"
@@ -55,11 +54,8 @@
                   transition="fade-transition"
                 ></v-carousel-item>
               </v-carousel>
-            </div>
-            <!-- <div class="cal-4" style="background-color: #fff">
-              
-            </div> -->
-          </div>
+            </v-col>
+          </v-row>
           <br />
           <v-card class="mx-auto" max-width="100%">
             <v-card-title>กระทู้ทั้งหมด</v-card-title>
@@ -130,8 +126,8 @@
               </div>
             </v-card-text>
           </v-card>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
     </div>
   </div>
 

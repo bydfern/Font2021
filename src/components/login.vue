@@ -2,13 +2,13 @@
 <div class="badyy">
   <div class="container">
     <!-- <v-card class="mx-auto"> -->
-      <v-card-title><p style="color:white">ลงชื่อเข้าใช้</p></v-card-title>
+      <v-card-title><p style="color:black">ลงชื่อเข้าใช้</p></v-card-title>
       <v-card-text>
         <v-text-field label="อีเมล" v-model="email"  outlined
           rounded 
           color="white"
           prepend-icon="mdi-email" @keypress.enter="login()">
-          <v-icon slot="prepend" color=" white"> mdi-email</v-icon>
+          <v-icon slot="prepend" > mdi-email</v-icon>
         </v-text-field>
         <v-text-field
           label="รหัสผ่าน"
@@ -128,7 +128,7 @@
     /* text-align: center;
     background-color: #ededed; 
     max-width: 100%; */
-    background:rgba(0, 0, 0, 0.3);
+    background:rgba(255, 255, 255, 0.3);
     box-shadow: 0 1.5px 0 0 rgba(52, 52, 52, 0.2);
     /* background:rgba(255, 172, 202, 0.5); */
     /* box-shadow: 0 1.5px 0 0 rgba(255, 255, 255, 0.1); */
