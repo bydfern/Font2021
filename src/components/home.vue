@@ -5,8 +5,9 @@
       <!-- <div class="container"> -->
       <v-row>
         <v-col cols="3">
+          <br>
           <v-card>
-            <v-img height="150px" src="" >
+            <v-img height="150px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/workplace-with-smartphone-laptop-black-table-top-view-copyspace-background.jpg?alt=media&token=edabe94a-a82e-4419-b05f-bfc30f591c68" >
               <v-card-title class="white--text mt-8">
                 <v-avatar size="56">
                   <img
@@ -14,7 +15,7 @@
                     :src="getProfile"
                   />
                 </v-avatar>
-                <p class="ml-3" style="color:black">
+                <p class="ml-3" style="color:white">
                   {{getUser}}
                 </p>
               </v-card-title>
@@ -56,24 +57,42 @@
               </v-carousel>
             </v-col>
             <v-col cols="4">
-              <br>
-              <v-card class="mx-auto" max-width="100%">
-                <v-card-title>Discover your Great Experience</v-card-title>
-                <v-card-text>
-                  <v-select
-                      style="width: 80%;"
-                      :items="sortDiscover"
-                      outlined
-                      v-model="sortOrder"
-                      @change="query()"
-                    />
-                </v-card-text>
+              <v-card class="mx-auto" max-width="100%" height="100%">
+                <center>
+                  <v-card-title>Discover your Great Experience</v-card-title>
+                  <v-card-text>
+                    <v-select
+                        color="red lighten-3"
+                        style="width: 80%;"
+                        :items="sortDiscover"
+                        label="Outlined style"
+                        dense
+                        outlined
+                        v-model="sortOrder"
+                        @change="query()"
+                      />
+                  </v-card-text>
+                  </center>
               </v-card>
+              
             </v-col>
           </v-row>
           <br />
           <v-card class="mx-auto" max-width="100%">
             <v-card-title>กระทู้ทั้งหมด</v-card-title>
+            <!-- <v-card-text>
+              <v-app id="inspire">
+                <v-combobox
+                  v-model="chips"
+                  :items="sortByItems"
+                  chips
+                  clearable
+                  label="Your favorite hobbies"
+                  multiple
+                  prepend-icon="mdi-filter-variant"
+                  solo
+                >
+            </v-card-text> -->
             <v-card-text>
               <div class="dataQuery">
                 <v-text-field
@@ -88,13 +107,17 @@
                 <v-select
                   class="mx-2"
                   :items="sortByItems"
+                  label="เรียงลำดับ"
+                  dense
                   outlined
                   v-model="sortBy"
                   @change="query()"
                 />
                 <v-select
-                  style="width: 20px;"
+                  style="width: 20%;"
                   :items="sortOrderItems"
+                  label="เรียงลำดับ"
+                  dense
                   outlined
                   v-model="sortOrder"
                   @change="query()"
@@ -170,8 +193,8 @@ export default {
       ],
       sortBy: "createdAt",
       sortOrderItems: [
-        { text: "▲", value: -1 },
-        { text: "▼", value: 1 },
+        { text: "▲ มาก", value: -1 },
+        { text: "▼ น้อย", value: 1 },
       ],
       sortDiscover: [
         { text: "New Event", value: -1 },
@@ -187,6 +210,7 @@ export default {
 
       getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
       getProfile : sessionStorage.getItem("profileUrl"),
+
     };
   },
   created() {
@@ -230,14 +254,15 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
 .v-card {
   max-width: 1000px;
 }
 .bodyy {
   display: flex;
-  font-family: "lato", sans-serif;
+  font-family: 'Athiti', sans-serif;
   color: #fff;
-  background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
   min-height: 100%;
   background-size: cover;
   background-repeat: no-repeat;

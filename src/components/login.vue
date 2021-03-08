@@ -9,7 +9,7 @@
           v-model="email"
           outlined
           rounded
-          color="white"
+          color="black"
           prepend-icon="mdi-email"
           @keypress.enter="login()"
         >

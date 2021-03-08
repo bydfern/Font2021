@@ -128,7 +128,7 @@ export default {
 }
 .bodyy {
   padding-top: 80px;
-  /* height: 100%; */
+  height: 100%;
   text-align: center;
   background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
     /* background-color: #ededed; */
@@ -136,6 +136,6 @@ export default {
   min-height: 100%; */
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  /* background-position: center center; */
 }
 </style>
