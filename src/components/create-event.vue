@@ -3,17 +3,41 @@
     <menu-bar></menu-bar>
     <div class="container">
       <v-card class="mx-auto my-3">
-        <v-card-title>สร้างกระทู้ของฉัน</v-card-title>
+        <v-card-title>สร้างกิจกรรม</v-card-title>
         <v-card-text>
-          <v-text-field label="วิชา" v-model="subject" />
-          <v-text-field label="หัวข้อ" v-model="title" />
-          <v-select
-            class="my-3"
-            :items="typeItem"
-            label="หมวดหมู่กระทู้"
-            dense
-            v-model="selectedType"
+          <v-text-field label="ชื่อกิจกรรม*" v-model="name" />
+          <v-textarea
+            placeholder="รายละเอียด"
+            clearable
+            solo
+            auto-grow
+            rows="4"
+            v-model="detail"
           />
+          <v-select
+            :items="typeEventItem"
+            item-value="value"
+            v-model="typeEvent"
+          />
+          <v-text-field label="สถานที่*" v-if="!typeEvent" v-model="location"></v-text-field>
+          <v-date-picker v-model="startDate" />
+          <v-date-picker class="mx-5" v-model="endDate" />
+          <v-file-input
+            accept="image/*"
+            placeholder="เลือกรูปโปสเตอร์"
+            label="รูปภาพ*"
+            v-model="imageData"
+            show-size="true"
+            v-if="!posterData.posterUrl"
+          >
+            <v-icon @click="savePoster()" slot="append" color="success" :loading="loadPoster">mdi-plus-circle</v-icon>
+          </v-file-input>
+          <div>
+            <center>
+              <img :src="posterData.posterUrl" v-if="posterData.posterUrl" width="250px" height="500px">
+            </center>
+          </div>
+          <v-btn v-if="posterData.posterUrl" color="error" block @click="deletePoster()" class="mb-3">X</v-btn>
           <div id="contain" v-for="(item, index) in content" :key="index">
             <v-textarea
               placeholder="ข้อความ"
@@ -77,7 +101,7 @@
               <v-btn v-if="item.type == 'file' && item.value != ''" color="error" x-small @click="deleteFile(item, index)" class="my-2 mx-2">X</v-btn>
             </div>
           </div>
-          <div style="width: 100%;">
+          <div class="my-3" style="width: 100%;">
             <v-icon @click="addTextContent()" color="blue">mdi-plus-circle</v-icon>
             <v-icon class="mx-3" @click="addImageContent()" color="blue">mdi-image-plus</v-icon>
             <v-icon @click="addFileContent()" color="blue">mdi-file-plus</v-icon>
@@ -93,9 +117,10 @@
 </template>
 
 <script>
-  import menuBar from './menu-bar.vue'
+  import menuBar from './menu-bar'
+  import moment from 'moment'
   import firebase from 'firebase'
-  import Axios from 'axios'
+import Axios from 'axios'
 
   export default {
     components: {
@@ -103,27 +128,39 @@
     },
     data() {
       return {
-        email: sessionStorage.getItem('email'),
-        title: '',
-        subject: '',
+        name: '',
+        detail: '',
+        startDate: moment().format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD'),
+        imageData: null,
+        loadPoster: false,
         content: [],
-        loadStatus: false,
-        selectedType: 'อื่นๆ',
-        typeItem: [
-          { text: 'สุขภาพ' },
-          { text: 'ศิลปะ' },
-          { text: 'เทคโนโลยี' },
-          { text: 'วิทยาศาสตร์' },
-          { text: 'คณิตศาสตร์' },
-          { text: 'สังคม' },
-          { text: 'เศรษฐศาสตร์' },
-          { text: 'ภาษา' },
-          { text: 'แฟชั่น' },
-          { text: 'อื่นๆ' }
-        ]
+        posterData: {
+          posterUrl: '',
+          posterName: ''
+        },
+        typeEvent: 0,
+        location: '',
+        typeEventItem: [
+          { text: 'นอกสถานที่', value: 0 },
+          { text: 'ออนไลน์', value: 1 }
+        ],
+        email: sessionStorage.getItem('email')
       }
     },
     methods: {
+      async savePoster() {
+        this.loadPoster = true
+        const name = Date.now().toString()
+        const imageRef = firebase.storage().ref(this.email).child('event').child(name).put(this.imageData)
+        const uploadComplete = await Promise.all([imageRef])
+        if (uploadComplete) {
+          this.posterData.posterUrl = await imageRef.snapshot.ref.getDownloadURL()
+          this.posterData.posterName = name
+          this.loadStatus = false
+          this.imageData = null
+        }
+      },
       addTextContent() {
         this.content.push({
           type: 'text',
@@ -151,7 +188,7 @@
       },
       async saveImage(item, index) {
         this.content[index].loadStatus = true
-        const imageRef = firebase.storage().ref(this.email).child('topic').child(item.name).put(item.imageData)
+        const imageRef = firebase.storage().ref(this.email).child('event').child(item.name).put(item.imageData)
         const uploadComplete = await Promise.all([imageRef])
         if (uploadComplete) {
           this.content[index].value = await imageRef.snapshot.ref.getDownloadURL()
@@ -163,7 +200,7 @@
       async saveFile(item, index) {
         item.name = item.fileData.name
         this.content[index].loadStatus = true
-        const fileRef = firebase.storage().ref(this.email).child('topic').child(`${item.name}`).put(item.fileData)
+        const fileRef = firebase.storage().ref(this.email).child('event').child(`${item.name}`).put(item.fileData)
         const uploadComplete = await Promise.all([fileRef])
         if (uploadComplete) {
           this.content[index].value = await fileRef.snapshot.ref.getDownloadURL()
@@ -173,58 +210,61 @@
         }
       },
       async deleteImage(item, index) {
-        console.log(index)
         this.content.splice(index, 1)
-        firebase.storage().ref(this.email).child('topic').child(item.name).delete()
+        firebase.storage().ref(this.email).child('event').child(item.name).delete()
       },
       async deleteFile(item, index) {
         this.content.splice(index, 1)
-        firebase.storage().ref(this.email).child('topic').child(item.name).delete()
+        firebase.storage().ref(this.email).child('event').child(item.name).delete()
+      },
+      async deletePoster() {
+        firebase.storage().ref(this.email).child('event').child(this.posterData.posterName).delete()
+        this.posterData = {
+          posterUrl: '',
+          posterName: ''
+        }
       },
       cancel() {
         for (let i = 0; i < this.content.length; i++) {
           if (this.content[i].type == 'image') {
-            firebase.storage().ref(this.email).child('topic').child(this.content[i].name).delete()
+            firebase.storage().ref(this.email).child('event').child(this.content[i].name).delete()
           }
         }
-        this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'event' })
       },
       async save() {
         try {
-          if (this.title == '' || this.subject == null || this.content.length == 0) {
-            throw { messages: 'กรุณากรอกข้อมูลให้ครบถ้วน' }
+          if (!this.posterData.posterUrl || !this.name || (!this.typeEvent && !this.location)) {
+            throw { messages: 'กรุณากรอกข้อมูลให้ครบ' }
           }
           const payload = {
-            memberId: sessionStorage.getItem('memberId'),
-            memberEmail: this.email,
-            title: this.title,
-            subject: this.subject,
+            name: this.name,
+            detail: this.detail,
+            typeEvent: this.typeEvent,
+            location: this.location,
+            startDate: this.startDate,
+            endDate: this.endDate,
+            posterUrl: this.posterData.posterUrl,
+            posterName: this.posterData.posterName,
             content: this.content,
-            type: this.selectedType
+            memberId: sessionStorage.getItem('memberId')
           }
           const result = await Axios({
             method: 'POST',
-            url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics`,
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/events`,
             data: payload
           })
           if (!result) {
-            throw { messages: 'มีปัญหาขณะบันทึกข้อมูลกรุณาลองใหม่อีกครั้ง' }
+            throw { messages: 'สร้างกิจกรรมผิดพลาด' }
           }
-          const exp = Number(sessionStorage.getItem('exp')) + 5
-          sessionStorage.setItem('exp', exp)
-          Axios({
-            method: 'PATCH',
-            url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
-            data: { exp }
-          })
-          this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ', 'success')
-          this.$router.push({ name: 'home' })
+          this.$swal('สำเร็จ', 'สร้างกิจกรรม', 'success')
+          this.$router.push({ name: 'allEvent' })
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด',  message, 'error')
         }
       }
-    },
+    }
   }
 </script>
 
@@ -234,5 +274,8 @@
   }
   .v-card__actions {
     flex-direction: row-reverse;
+  }
+  .image {
+    width: 100%;
   }
 </style>

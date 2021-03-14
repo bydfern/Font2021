@@ -9,7 +9,7 @@
       <div class="vl mx-2"></div>
       <v-btn @click="toHome()">หน้าหลัก</v-btn>
       <v-btn @click="toFavorite()">รายการโปรด</v-btn>
-      
+      <v-btn @click="toEvent()">กิจกรรม</v-btn>
       <v-btn @click="toCreateTopic()">สร้างกระทู้</v-btn>
       <v-btn @click="toMyTopic()">กระทู้ของฉัน</v-btn>
       <v-menu bottom left>
@@ -105,6 +105,9 @@ import Axios from 'axios'
       },
       toReport() {
         this.$router.push({ name: 'report' })
+      },
+      toEvent() {
+        this.$router.push({ name: 'allEvent' })
       }
     },
   }

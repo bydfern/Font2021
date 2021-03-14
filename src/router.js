@@ -10,6 +10,9 @@ import EditProfile from './components/edit-profile.vue'
 import EditTopic from './components/edit-topic.vue'
 import Favorite from './components/favorite.vue'
 import Report from './components/report.vue'
+import AllEvent from './components/all-event.vue'
+import CreateEvent from './components/create-event.vue'
+import Event from './components/event.vue'
 
 
 Vue.use(Router)
@@ -66,6 +69,21 @@ export default new Router({
       name: 'report',
       path: '/report',
       component: Report
+    },
+    {
+      name: 'allEvent',
+      path: '/events',
+      component: AllEvent
+    },
+    {
+      name: 'createEvent',
+      path: '/create-event',
+      component: CreateEvent
+    },
+    {
+      name: 'event',
+      path: '/event/:id',
+      component: Event
     }
   ],
 })
