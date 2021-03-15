@@ -13,7 +13,7 @@
           prepend-icon="mdi-email"
           @keypress.enter="login()"
         >
-          <v-icon slot="prepend"> mdi-email</v-icon>
+        <v-icon slot="prepend">mdi-email</v-icon>
         </v-text-field>
         <v-text-field
           label="รหัสผ่าน"
@@ -26,7 +26,7 @@
           @click:append="showPassword = !showPassword"
           prepend-icon="mdi-key"
           @keypress.enter="login()"
-        />
+        > <v-icon slot="prepend">mdi-key</v-icon> </v-text-field>
         <v-btn
           rounded
           block

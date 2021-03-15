@@ -1,22 +1,78 @@
 <template>
   <div>
     <menu-bar></menu-bar>
-    <div class="container">
-      <div class="addEvent">
-        <v-btn class="my-3" color="success" @click="toCreateEvent()">สร้างกิจกรรม</v-btn>
-      </div>
-      <v-card>
-        <v-card-title>กิจกรรม</v-card-title>
-        <v-card-text>
-          <div class="event my-3 mx-3" v-for="event in events" :key="event._id" @click="$router.push(`/event/${event._id}`)">
-            <img :src="event.posterUrl" width="200px" height="250px">
-            <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
-            <span><b>{{event.name}}</b></span>
-            <span v-if="event.typeEvent">ออนไลน์</span>
-            <span v-else>สถานที่: {{event.location}}</span>
+    <div class="dobyy">
+      <v-row>
+        <v-col cols="12">
+          <div class="addEvent">
+            <v-btn class="my-3" color="success" @click="toCreateEvent()">สร้างกิจกรรม</v-btn>
           </div>
-        </v-card-text>
-      </v-card>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3">
+          <v-card>
+            <v-img height="150px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/workplace-with-smartphone-laptop-black-table-top-view-copyspace-background.jpg?alt=media&token=edabe94a-a82e-4419-b05f-bfc30f591c68" >
+              <v-card-title class="white--text mt-8">
+                <v-avatar size="56">
+                  <img
+                    alt="user"
+                    :src="getProfile"
+                  />
+                </v-avatar>
+                <p class="ml-3" style="color:white">
+                  {{getUser}}
+                </p>
+              </v-card-title>
+            </v-img>
+
+            <v-card-text>
+              <div class="font-weight-bold ml-8 mb-2">
+                Event
+              </div>
+
+              <v-timeline align-top dense>
+                <v-timeline-item
+                  v-for="(message, index) in event"
+                  :key="`${message.startDate}-${index}`"
+                  small
+                >
+                  <div>
+                    <div class="font-weight-normal">
+                      <strong>{{ message.name }}</strong> @{{ message.startDate }}
+                    </div>
+                    <div>{{ message.detail }}</div>
+                  </div>
+                </v-timeline-item>
+              </v-timeline>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="9">
+      
+          <v-card>
+            <v-card-title>กิจกรรม</v-card-title>
+            <v-card-text>
+              <v-card max-width="100%" class="mx-auto">
+                <v-container class="pa-1">
+                  <v-item-group multiple>
+                    <v-row>
+                        <div class="event my-3 mx-3" v-for="event in events" :key="event._id" @click="$router.push(`/event/${event._id}`)">
+                          <img :src="event.posterUrl" width="170px" height="200px">
+                          <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
+                          <span><b>{{event.name}}</b></span>
+                          <span v-if="event.typeEvent">ออนไลน์</span>
+                          <span v-else>สถานที่: {{event.location}}</span> 
+                        </div>
+                    </v-row>
+                  </v-item-group>
+                </v-container>
+              </v-card>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+      
     </div>
   </div>
 </template>
@@ -32,7 +88,9 @@ import moment from 'moment'
     },
     data() {
       return {
-        events: []
+        events: [],
+        getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+        getProfile : sessionStorage.getItem("profileUrl"),
       }
     },
     async created () {
@@ -65,9 +123,22 @@ import moment from 'moment'
     width: 200px;
     display: flex;
     flex-direction: column;
+
   }
   .v-card__text {
     display: flex;
     flex-direction: row;
+  }
+  .dobyy{
+    /* display: flex; */
+    font-family: 'Athiti', sans-serif;
+    color: #fff;
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
+    min-height: 100%;
+    max-width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 0px 50px 0px 50px;
   }
 </style>
