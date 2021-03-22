@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="bodyy"> -->
+  <div class="front"> 
     <div class="container">
       <v-card class="mx-auto mt-3">
         <v-card-title>สมัครสมาชิก</v-card-title>
@@ -38,7 +38,7 @@
         </v-card-text>
       </v-card>
     </div>
-  <!-- </div> -->
+  </div> 
   
 </template>
 
@@ -139,6 +139,11 @@
 </script>
 
 <style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+
+
+
   .container {
     padding-top: 80px;
     height: 100%;
@@ -168,6 +173,18 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    font-family: 'Athiti', sans-serif;
+  
+
     padding: 0px 50px 0px 50px;
   }
+
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
+  
+
 </style>

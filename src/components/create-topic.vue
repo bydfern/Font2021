@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar></menu-bar>
     <div class="container">
       <v-card class="mx-auto my-3">
@@ -229,6 +229,12 @@
 </script>
 
 <style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
   .v-card {
     max-width: 1000px;
   }

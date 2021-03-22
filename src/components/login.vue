@@ -1,6 +1,7 @@
 <template>
   <div class="badyy">
     <div class="container">
+
       <!-- <v-card class="mx-auto"> -->
       <v-card-title><p style="color:black">ลงชื่อเข้าใช้</p></v-card-title>
       <v-card-text>
@@ -49,6 +50,7 @@
 </template>
 
 <script>
+
 import firebase from "firebase";
 import axios from "axios";
 import moment from "moment";
@@ -152,6 +154,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+
 .container {
   /* height: 100%; */
   /* text-align: center;
@@ -170,17 +174,21 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "lato", sans-serif;
+  
+
+
   color: #fff;
   background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
   min-height: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+  font-family: 'Athiti', sans-serif;
 }
 .v-card {
   max-width: 800px;
   top: 45%;
   transform: translate(0, -50%);
 }
+
 </style>

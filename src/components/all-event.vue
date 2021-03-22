@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar></menu-bar>
     <div class="dobyy">
       <v-row>
@@ -126,6 +126,12 @@ import moment from 'moment'
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
+
   .addEvent {
     display: flex;
     flex-direction: row-reverse;

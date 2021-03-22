@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class = "front">
+
     <v-app-bar dense dark>
       <img class="mx-3" src="../../public/book-icon.png" height="30px" width="30px">
       <v-toolbar-title>Education space</v-toolbar-title>
@@ -114,9 +115,14 @@ import Axios from 'axios'
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
   .vl {
     border-left: 2px solid whitesmoke;
     height: 40px;
     
+  }
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
   }
 </style>

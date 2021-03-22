@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar></menu-bar>
     <div class="container">
       <div class="title">
@@ -289,6 +289,13 @@ import Helper from '../helper/helper'
 </script>
 
 <style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
+
   .container {
     max-width: 800px;
     margin: auto;
