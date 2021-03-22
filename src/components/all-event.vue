@@ -33,13 +33,13 @@
 
               <v-timeline align-top dense>
                 <v-timeline-item
-                  v-for="(message, index) in event"
+                  v-for="(message, index) in eventsFollowed"
                   :key="`${message.startDate}-${index}`"
                   small
                 >
                   <div>
                     <div class="font-weight-normal">
-                      <strong>{{ message.name }}</strong> @{{ message.startDate }}
+                      <strong>{{ message.name }}</strong> @{{ formatDate(message.startDate) }}
                     </div>
                     <div>{{ message.detail }}</div>
                   </div>
@@ -91,10 +91,14 @@ import moment from 'moment'
         events: [],
         getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
         getProfile : sessionStorage.getItem("profileUrl"),
+        eventsFollowed: []
       }
     },
     async created () {
-      await this.getEvents()
+      await Promise.all([
+        this.getEvents(),
+        this.getFollowedEvents()
+      ])
     },
     methods: {
       toCreateEvent() {
@@ -106,6 +110,13 @@ import moment from 'moment'
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/events`
         })
         this.events = events
+      },
+      async getFollowedEvents() {
+        const { data: { data: events } } = await Axios({
+          method: 'GET',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?following=${sessionStorage.getItem('memberId')}&endDate[$gte]=${moment().toString()}&$sort[endDate]=1&$limit=3&$skip=0`
+        })
+        this.eventsFollowed = events
       },
       formatDate(date) {
         return moment(date).format('YYYY-MM-DD')

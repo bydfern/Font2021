@@ -28,13 +28,13 @@
 
               <v-timeline align-top dense>
                 <v-timeline-item
-                  v-for="(message, index) in event"
+                  v-for="(message, index) in eventsFollowed"
                   :key="`${message.startDate}-${index}`"
                   small
                 >
                   <div>
                     <div class="font-weight-normal">
-                      <strong>{{ message.name }}</strong> @{{ message.startDate }}
+                      <strong>{{ message.name }}</strong> @{{ formatDate(message.startDate) }}
                     </div>
                     <div>{{ message.detail }}</div>
                   </div>
@@ -207,15 +207,15 @@ export default {
       currentPage: 1,
       totalPage: 1,
       event: [],
-
       getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
       getProfile : sessionStorage.getItem("profileUrl"),
-
+      eventsFollowed: []
     };
   },
   created() {
     this.getTopics();
     this.getEvent3();
+    this.getFollowedEvents()
   },
   methods: {
     async getTopics() {
@@ -248,7 +248,14 @@ export default {
         url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?$limit=3`,
       });
       this.event = eventRe.data;
-    }
+    },
+    async getFollowedEvents() {
+      const { data: { data: events } } = await Axios({
+        method: 'GET',
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?following=${sessionStorage.getItem('memberId')}&endDate[$gte]=${moment().toString()}&$sort[endDate]=1&$limit=3&$skip=0`
+      })
+      this.eventsFollowed = events
+    },
   },
 };
 </script>

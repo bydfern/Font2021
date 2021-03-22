@@ -10,6 +10,8 @@
           <h3>{{event.name}}</h3>
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
+          <v-btn class="my-3" rounded color="primary" v-if="!isFollowed" @click="follow()">ติดตาม</v-btn>
+          <v-btn class="my-3" rounded color="error" v-else @click="follow()">ยกเลิกติดตาม</v-btn>
         </div>
       </div>
       <hr class="my-5">
@@ -114,7 +116,8 @@ import Helper from '../helper/helper'
         numberFiles: 0,
         attachment: [],
         loadSaveCommentStatus: false,
-        helper: new Helper()
+        helper: new Helper(),
+        isFollowed: false
       }
     },
     created () {
@@ -147,6 +150,7 @@ import Helper from '../helper/helper'
         })
         events.comments = comments
         this.event = events
+        this.isFollowed = events.following.includes(sessionStorage.getItem('memberId'))
       },
       formatDate(date) {
         return moment(date).format('YYYY-MM-DD')
@@ -265,6 +269,21 @@ import Helper from '../helper/helper'
           this.loadSaveCommentStatus = false
         }
       },
+      async follow() {
+        if (this.isFollowed) {
+          const index = this.event.following.findIndex(id => id === sessionStorage.getItem('memberId'))
+          this.event.following.splice(index, 1)
+          this.isFollowed = false
+        } else {
+          this.event.following.push(sessionStorage.getItem('memberId'))
+          this.isFollowed = true
+        }
+        Axios({
+          method: 'PATCH',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${this.$route.params.id}`,
+          data: { following: this.event.following }
+        })
+      }
     },
   }
 </script>
