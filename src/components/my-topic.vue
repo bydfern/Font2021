@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar></menu-bar>
     <div class="container">
+
       <v-card class="mx-auto my-3">
         <v-card-title>กระทู้ทั้งหมด</v-card-title>
         <v-card-text>
@@ -40,6 +41,7 @@
   import MenuBar from './menu-bar.vue'
   import moment from 'moment'
   import Axios from 'axios'
+  
 
   export default {
     components: {
@@ -97,11 +99,16 @@
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
   .v-card {
     max-width: 1200px;
   }
   .actionBtn {
     display: flex;
     flex-direction: row;
+  }
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
   }
 </style>

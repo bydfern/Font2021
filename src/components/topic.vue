@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar></menu-bar>
     <div class="container my-5">
       <div class="title-box">
@@ -435,6 +435,12 @@
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
+  
   .container {
     max-width: 800px;
     margin: auto;

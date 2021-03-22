@@ -1,7 +1,9 @@
 <template>
   <div>
+
     <menu-bar></menu-bar>
     <div class="bodyy">
+      
       <v-card class="mx-auto my-3">
         <v-card-title>กระทู้ทั้งหมด</v-card-title>
         <v-card-text>
@@ -112,6 +114,7 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
 .v-card {
   max-width: 1000px;
 }
@@ -130,6 +133,7 @@ export default {
   padding-top: 80px;
   height: 100%;
   text-align: center;
+  font-family: 'Athiti', sans-serif;
   background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
     /* background-color: #ededed; */
   /* max-width: 100%;
@@ -137,5 +141,8 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   /* background-position: center center; */
+  
+
 }
+
 </style>

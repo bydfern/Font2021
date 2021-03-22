@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class = "front">
     <menu-bar />
     <div class="bodyy">
       <!-- <div class="container"> -->
@@ -255,6 +255,11 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front
+  {
+    font-family: 'Athiti', sans-serif;
+  }
+  
 .v-card {
   max-width: 1000px;
 }
