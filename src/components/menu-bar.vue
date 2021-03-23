@@ -1,18 +1,18 @@
 <template>
   <div class = "front">
 
-    <v-app-bar dense dark>
+    <v-app-bar>
       <img class="mx-3" src="../../public/book-icon.png" height="30px" width="30px">
       <v-toolbar-title>Education space</v-toolbar-title>
       <v-spacer/>
       <img :src="profileUrl" width="40px;" height="40px;">
       <p class="my-auto mx-3">{{email}}</p>
       <div class="vl mx-2"></div>
-      <v-btn @click="toHome()">หน้าหลัก</v-btn>
-      <v-btn @click="toFavorite()">รายการโปรด</v-btn>
-      <v-btn @click="toEvent()">กิจกรรม</v-btn>
-      <v-btn @click="toCreateTopic()">สร้างกระทู้</v-btn>
-      <v-btn @click="toMyTopic()">กระทู้ของฉัน</v-btn>
+      <v-btn text @click="toHome()">หน้าหลัก</v-btn>
+      <v-btn text @click="toFavorite()">รายการโปรด</v-btn>
+      <v-btn text @click="toEvent()">กิจกรรม</v-btn>
+      <v-btn text @click="toCreateTopic()">สร้างกระทู้</v-btn>
+      <v-btn text @click="toMyTopic()">กระทู้ของฉัน</v-btn>
       <v-menu bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>

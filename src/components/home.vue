@@ -79,6 +79,25 @@
           </v-row>
           <br />
           <v-card class="mx-auto" max-width="100%">
+            <v-card-text>
+                <v-chip-group
+                v-model="neighborhoods"
+                column
+                multiple
+                style="position: relative; text-align: center;"
+              >
+                <v-chip filter outlined>  สุขภาพ </v-chip>
+                <v-chip filter outlined>  ศิลปะ </v-chip>
+                <v-chip filter outlined>  เทคโนโลยี </v-chip>
+                <v-chip filter outlined>  วิทยาศาสตร์ </v-chip>
+                <v-chip filter outlined>  คณิตศาสตร์ </v-chip>
+                <v-chip filter outlined>  สังคม </v-chip>
+                <v-chip filter outlined>  เศรษฐศาสตร์ </v-chip>
+                <v-chip filter outlined>  ภาษา </v-chip>
+                <v-chip filter outlined>  แฟชั่น </v-chip>
+                <v-chip filter outlined>  อื่นๆ </v-chip>
+              </v-chip-group>
+            </v-card-text>
             <v-card-title>กระทู้ทั้งหมด</v-card-title>
             <!-- <v-card-text>
               <v-app id="inspire">

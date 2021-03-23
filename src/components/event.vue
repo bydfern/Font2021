@@ -10,7 +10,13 @@
           <h3>{{event.name}}</h3>
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
-          <v-btn class="my-3" rounded color="primary" v-if="!isFollowed" @click="follow()">ติดตาม</v-btn>
+          <v-btn
+              icon
+              color=""
+              v-if="!isFollowed" @click="follow()"
+            >
+              <v-icon>mdi mdi-account-multiple-plus</v-icon>
+            </v-btn>
           <v-btn class="my-3" rounded color="error" v-else @click="follow()">ยกเลิกติดตาม</v-btn>
         </div>
       </div>
