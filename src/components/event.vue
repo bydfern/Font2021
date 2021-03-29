@@ -10,7 +10,7 @@
           <h3>{{event.name}}</h3>
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
-
+          <span>จำนวนผู้ติดตาม: {{event.following.length}}</span>
           <v-btn
               color="primary"
               icon

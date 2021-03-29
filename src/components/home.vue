@@ -88,16 +88,16 @@
 
                 >
                 <!-- text-color="white" -->
-                <v-chip  outlined color="pink"><v-icon left>mdi-weight-lifter</v-icon>   สุขภาพ </v-chip>
-                <v-chip  outlined color="red"><v-icon left>mdi-battlenet</v-icon>  วิทยาศาสตร์ </v-chip>
-                <v-chip  outlined color="lime darken-1"><v-icon left>mdi-brain</v-icon>  คณิตศาสตร์ </v-chip>
-                <v-chip  outlined color="orange accent-4"><v-icon left>mdi-human-greeting-proximity</v-icon>  สังคม </v-chip>
-                <v-chip  outlined color="cyan lighten-2"><v-icon left>mdi-palette</v-icon>  ศิลปะ </v-chip>
-                <v-chip  outlined color="light-blue"><v-icon left>mdi-monitor</v-icon>  เทคโนโลยี </v-chip>
-                <v-chip  outlined color="teal accent-3"><v-icon left>mdi-finance</v-icon>  เศรษฐศาสตร์ </v-chip>
-                <v-chip  outlined color="cyan"><v-icon left>mdi-message-text-outline</v-icon>  ภาษา </v-chip>
-                <v-chip  outlined color="purple lighten-2"><v-icon left>mdi-cards-heart</v-icon>  แฟชั่น </v-chip>
-                <v-chip   outlined color="blue-grey darken-2"><v-icon left>mdi-dots-horizontal</v-icon>  อื่นๆ </v-chip>
+                <v-chip  outlined color="pink" @click="query('สุขภาพ')"><v-icon left>mdi-weight-lifter</v-icon>   สุขภาพ </v-chip>
+                <v-chip  outlined color="red"  @click="query('วิทยาศาสตร์')"><v-icon left>mdi-battlenet</v-icon>  วิทยาศาสตร์ </v-chip>
+                <v-chip  outlined color="lime darken-1" @click="query('คณิตศาสตร์')"><v-icon left>mdi-brain</v-icon>  คณิตศาสตร์ </v-chip>
+                <v-chip  outlined color="orange accent-4" @click="query('สังคม')"><v-icon left>mdi-human-greeting-proximity</v-icon>  สังคม </v-chip>
+                <v-chip  outlined color="cyan lighten-2" @click="query('ศิลปะ')"><v-icon left>mdi-palette</v-icon>  ศิลปะ </v-chip>
+                <v-chip  outlined color="light-blue" @click="query('เทคโนโลยี')"><v-icon left>mdi-monitor</v-icon>  เทคโนโลยี </v-chip>
+                <v-chip  outlined color="teal accent-3" @click="query('เศรษฐศาสตร์')"><v-icon left>mdi-finance</v-icon>  เศรษฐศาสตร์ </v-chip>
+                <v-chip  outlined color="cyan" @click="query('ภาษา')"><v-icon left>mdi-message-text-outline</v-icon>  ภาษา </v-chip>
+                <v-chip  outlined color="purple lighten-2" @click="query('แฟชั่น')"><v-icon left>mdi-cards-heart</v-icon>  แฟชั่น </v-chip>
+                <v-chip   outlined color="blue-grey darken-2" @click="query('อื่นๆ')"><v-icon left>mdi-dots-horizontal</v-icon>  อื่นๆ </v-chip>
               </v-chip-group>
             </v-card-text>
             <v-card-title>กระทู้ทั้งหมด</v-card-title>
@@ -149,9 +149,10 @@
                   <tr>
                     <th style="width: 30%;">เรื่อง</th>
                     <th style="width: 30%">วิชา</th>
+                    <th style="width: 20%">หมวดหมู่</th>
                     <th style="width: 10%">ถูกใจ</th>
-                    <th style="width: 20%;">เจ้าของกระทู้</th>
-                    <th style="width: 10%">สร้างเมื่อ</th>
+                    <th style="width: 15%;">เจ้าของกระทู้</th>
+                    <th style="width: 5%">สร้างเมื่อ</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -162,6 +163,7 @@
                   >
                     <td>{{ topic.title }}</td>
                     <td>{{ topic.subject }}</td>
+                    <td>{{topic.type}}</td>
                     <td>{{ topic.like.length }}</td>
                     <td>{{ topic.memberEmail }}</td>
                     <td>{{ formatDate(topic.createdAt) }}</td>
@@ -209,6 +211,7 @@ export default {
       sortByItems: [
         { text: "เรื่อง", value: "title" },
         { text: "วิชา", value: "subject" },
+        { text: "หมวดหมู่", value: "type" },
         { text: "ถูกใจ", value: "like" },
         { text: "วันที่โพส", value: "createdAt" },
       ],
@@ -248,17 +251,18 @@ export default {
       this.totalPage = Math.ceil(topicsResult.total / this.pageSize);
     },
     formatDate(date) {
-      return moment(date).format("DD/MM/YYYY HH:mm:ss");
+      return moment(date).format("DD/MM/YYYY");
     },
-    async query() {
-      const skip = (this.currentPage - 1) * this.pageSize;
+    async query(filter) {
+      const skip = (this.currentPage - 1) * this.pageSize
       if (!this.search) {
-        this.search = "";
+        this.search = ""
       }
-      const search = `$or[0][title][$regex]=${this.search}&$or[1][subject][$regex]=${this.search}&$or[2][memberEmail][$regex]=${this.search}`;
+      const search = `$or[0][title][$regex]=${this.search}&$or[1][subject][$regex]=${this.search}&$or[2][memberEmail][$regex]=${this.search}`
+      filter = (filter) ? `type=${filter}` : ''
       const { data: topicsResult } = await Axios({
         method: "GET",
-        url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics?$sort[${this.sortBy}]=${this.sortOrder}&${search}&$limit=${this.pageSize}&$skip=${skip}`,
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics?$sort[${this.sortBy}]=${this.sortOrder}&${search}&$limit=${this.pageSize}&$skip=${skip}&${filter}`,
       });
       this.topics = topicsResult.data;
       this.totalPage = Math.ceil(topicsResult.total / this.pageSize);
