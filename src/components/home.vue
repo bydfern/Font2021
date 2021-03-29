@@ -81,21 +81,23 @@
           <v-card class="mx-auto" max-width="100%">
             <v-card-text>
                 <v-chip-group
-                v-model="neighborhoods"
-                column
-                multiple
-                style="position: relative; text-align: center;"
-              >
-                <v-chip filter outlined>  สุขภาพ </v-chip>
-                <v-chip filter outlined>  ศิลปะ </v-chip>
-                <v-chip filter outlined>  เทคโนโลยี </v-chip>
-                <v-chip filter outlined>  วิทยาศาสตร์ </v-chip>
-                <v-chip filter outlined>  คณิตศาสตร์ </v-chip>
-                <v-chip filter outlined>  สังคม </v-chip>
-                <v-chip filter outlined>  เศรษฐศาสตร์ </v-chip>
-                <v-chip filter outlined>  ภาษา </v-chip>
-                <v-chip filter outlined>  แฟชั่น </v-chip>
-                <v-chip filter outlined>  อื่นๆ </v-chip>
+                  v-model="neighborhoods"
+                  column
+                  multiple
+                  style="text-align: center; max-width: 80% "
+
+                >
+                <!-- text-color="white" -->
+                <v-chip  outlined color="pink"><v-icon left>mdi-weight-lifter</v-icon>   สุขภาพ </v-chip>
+                <v-chip  outlined color="red"><v-icon left>mdi-battlenet</v-icon>  วิทยาศาสตร์ </v-chip>
+                <v-chip  outlined color="lime darken-1"><v-icon left>mdi-brain</v-icon>  คณิตศาสตร์ </v-chip>
+                <v-chip  outlined color="orange accent-4"><v-icon left>mdi-human-greeting-proximity</v-icon>  สังคม </v-chip>
+                <v-chip  outlined color="cyan lighten-2"><v-icon left>mdi-palette</v-icon>  ศิลปะ </v-chip>
+                <v-chip  outlined color="light-blue"><v-icon left>mdi-monitor</v-icon>  เทคโนโลยี </v-chip>
+                <v-chip  outlined color="teal accent-3"><v-icon left>mdi-finance</v-icon>  เศรษฐศาสตร์ </v-chip>
+                <v-chip  outlined color="cyan"><v-icon left>mdi-message-text-outline</v-icon>  ภาษา </v-chip>
+                <v-chip  outlined color="purple lighten-2"><v-icon left>mdi-cards-heart</v-icon>  แฟชั่น </v-chip>
+                <v-chip   outlined color="blue-grey darken-2"><v-icon left>mdi-dots-horizontal</v-icon>  อื่นๆ </v-chip>
               </v-chip-group>
             </v-card-text>
             <v-card-title>กระทู้ทั้งหมด</v-card-title>

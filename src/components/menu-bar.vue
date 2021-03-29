@@ -17,11 +17,13 @@
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
         </template>
-        <v-list>
-          <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
-          <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
-          <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
-          <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
+        <v-list> 
+          <div class="front">
+            <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
+            <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
+            <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
+            <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
+          </div>
         </v-list>
       </v-menu>
     </v-app-bar>

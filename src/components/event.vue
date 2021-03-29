@@ -2,7 +2,7 @@
   <div class = "front">
     <menu-bar></menu-bar>
     <div class="container">
-      <div class="title">
+      <div class="title_1">
         <div class="poster">
           <img :src="event.posterUrl" width="200" height="250px">
         </div>
@@ -10,14 +10,26 @@
           <h3>{{event.name}}</h3>
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
+
           <v-btn
+              color="primary"
               icon
-              color=""
               v-if="!isFollowed" @click="follow()"
             >
-              <v-icon>mdi mdi-account-multiple-plus</v-icon>
-            </v-btn>
-          <v-btn class="my-3" rounded color="error" v-else @click="follow()">ยกเลิกติดตาม</v-btn>
+              <v-icon>
+                mdi mdi-account-multiple-plus
+              </v-icon>
+          </v-btn>
+
+          <v-btn
+              icon
+              color="red"
+              v-if="isFollowed" @click="follow()"
+          >
+            <v-icon left>
+              mdi mdi-account-minus-outline
+            </v-icon> 
+          </v-btn>
         </div>
       </div>
       <hr class="my-5">
@@ -306,9 +318,10 @@ import Helper from '../helper/helper'
     max-width: 800px;
     margin: auto;
   }
-  .title {
+  .title_1 {
     display: flex;
     flex-direction: row;
+    font-family: 'Athiti', sans-serif;
   }
   .datail {
     display: flex;
