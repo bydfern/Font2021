@@ -246,7 +246,7 @@ import Axios from 'axios'
             endDate: this.endDate,
             posterUrl: this.posterData.posterUrl,
             posterName: this.posterData.posterName,
-            content: this.content,
+            contents: this.content,
             memberId: sessionStorage.getItem('memberId')
           }
           const result = await Axios({

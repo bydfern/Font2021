@@ -36,7 +36,6 @@
                     <div class="font-weight-normal">
                       <strong>{{ message.name }}</strong> @{{ formatDate(message.startDate) }}
                     </div>
-                    <div>{{ message.detail }}</div>
                   </div>
                 </v-timeline-item>
               </v-timeline>
