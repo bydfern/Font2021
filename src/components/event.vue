@@ -26,7 +26,7 @@
               color="red"
               v-if="isFollowed" @click="follow()"
           >
-            <v-icon left>
+            <v-icon>
               mdi mdi-account-minus-outline
             </v-icon> 
           </v-btn>
@@ -37,6 +37,11 @@
         <p v-if="item.type == 'text'">{{item.value}}</p>
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
         <v-icon v-if="item.type == 'file'">mdi-file-document-outline</v-icon><a v-if="item.type == 'file'" :href="item.value">{{item.name}}</a>
+      </div>
+      <div class="getTicket mt-8">
+        <v-btn v-if="statusRegister === -1 || statusRegister === 0" rounded color="success" @click="registerEvent()">สมัครเข้าร่วม</v-btn>
+        <v-btn v-else-if="statusRegister === 1" disabled rounded>สมัครเข้าร่วมแล้ว</v-btn>
+        <v-btn v-else-if="statusRegister === 2" color="#FFE12B" rounded @click="cancelRegister()">กำลังรออนุมัติ</v-btn>
       </div>
       <h2 class="my-3">แสดงความคิดเห็น</h2>
       <div class="comment my-5">
@@ -135,11 +140,16 @@ import Helper from '../helper/helper'
         attachment: [],
         loadSaveCommentStatus: false,
         helper: new Helper(),
-        isFollowed: false
+        isFollowed: false,
+        register: [],
+        statusRegister: -1,
+        totalAccept: 0,
+        myRegister: ''
       }
     },
-    created () {
+    async created () {
       this.getEvent()
+      this.getRegisterData()
     },
     methods: {
       async getEvent() {
@@ -301,6 +311,88 @@ import Helper from '../helper/helper'
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${this.$route.params.id}`,
           data: { following: this.event.following }
         })
+      },
+      async registerEvent() {
+        try {
+          const { isConfirmed, value } = await this.$swal({
+            icon: 'info',
+            input: 'textarea',
+            inputLabel: 'ข้อความเพิ่มเติม',
+            inputPlaceholder: 'ข้อความที่ต้องการส่งให้เจ้าของกิจกรรมเพิ่มเติม',
+            showCancelButton: true,
+            confirmButtonText: 'สมัคร',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#4caf50',
+            cancelButtonColor: '#d14529'
+          })
+          if (isConfirmed) {
+            const payload = {
+              eventId: this.event._id,
+              eventName: this.event.name,
+              memberId: sessionStorage.getItem('memberId'),
+              memberName: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+              memberEmail: sessionStorage.getItem('email'),
+              detail: value
+            }
+            const result = await Axios({
+              method: 'POST',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event`,
+              data: payload
+            })
+            if (!result) {
+              throw { messages: 'สมัครเข้าร่วมกิจกรรมล้มเหลวกรุณาลองใหม่อีกครั้ง' }
+            }
+            this.statusRegister = 2
+            this.myRegister = result
+            this.$swal('สำเร็จ', 'สมัครเข้าร่วมกิจกรรมสำเร็จ', 'success')
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+        }
+      },
+      async getRegisterData() {
+        const { data: { data: registerData } } = await Axios({
+          method: 'GET',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event?eventId=${this.$route.params.id}`
+        })
+        this.register = registerData
+        this.totalAccept = registerData.filter(register => register.acceptStatus === 1).length
+        const myRegister = registerData.find(register => register.memberId === sessionStorage.getItem('memberId'))
+        if (myRegister) {
+          this.statusRegister = myRegister.acceptStatus
+          this.myRegister = myRegister
+        }
+      },
+      async cancelRegister () {
+        try {
+          const { isConfirmed } = await this.$swal({
+            title: 'ยืนยัน',
+            text: 'คุณต้องการยกเลิกการสมัครกิจกรรมหรือไม่',
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#d14529'
+          })
+          if (isConfirmed) {
+            const result = await Axios({
+              method: 'PATCH',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event/${this.myRegister._id}`,
+              data: { status: 0 }
+            })
+            if (!result) {
+              throw { messages: 'ยกเลิกล้มเหลวกรุณาลองใหม่อีกครั้ง' }
+            }
+            this.statusRegister = -1
+            this.myRegister = ''
+            this.$swal('สำเร็จ', 'ยกเลิกสมัครกิจกรรมสำเร็จ', 'success')
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+        }
       }
     },
   }
@@ -353,5 +445,9 @@ import Helper from '../helper/helper'
     display: flex;
     flex-direction: row;
     transform: translate(0, -45px);
+  }
+  .getTicket {
+    display: flex;
+    flex-direction: row-reverse;
   }
 </style>
