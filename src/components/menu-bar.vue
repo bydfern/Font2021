@@ -1,18 +1,17 @@
 <template>
   <div class = "front">
-
     <v-app-bar>
       <img class="mx-3" src="../../public/book-icon.png" height="30px" width="30px">
       <v-toolbar-title>Education space</v-toolbar-title>
       <v-spacer/>
-      <img :src="profileUrl" width="40px;" height="40px;">
-      <p class="my-auto mx-3">{{email}}</p>
-      <div class="vl mx-2"></div>
+      <div class="profile" @click="toMyprofile()">
+        <img :src="profileUrl" width="40px;" height="40px;">
+        <p class="my-auto mx-3">{{email}}</p>
+      </div>
+      <!-- <div class="vl mx-2"></div> -->
       <v-btn text @click="toHome()">หน้าหลัก</v-btn>
-      <v-btn text @click="toFavorite()">รายการโปรด</v-btn>
       <v-btn text @click="toEvent()">กิจกรรม</v-btn>
       <v-btn text @click="toCreateTopic()">สร้างกระทู้</v-btn>
-      <v-btn text @click="toMyTopic()">กระทู้ของฉัน</v-btn>
       <v-menu bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
@@ -20,9 +19,7 @@
         <v-list> 
           <div class="front">
             <v-list-item @click="logout()">ออกจากระบบ</v-list-item>
-            <v-list-item @click="toEditProfile()">แก้ไขข้อมูลส่วนตัว</v-list-item>
             <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
-            <v-list-item @click="removeMember()">ลบบัญชี</v-list-item>
           </div>
         </v-list>
       </v-menu>
@@ -32,7 +29,6 @@
 
 <script>
   import firebase from 'firebase'
-import Axios from 'axios'
 
   export default {
     data() {
@@ -59,52 +55,8 @@ import Axios from 'axios'
       toCreateTopic() {
         this.$router.push({ name: 'createTopic' })
       },
-      toMyTopic() {
-        this.$router.push({ name: 'myTopic' })
-      },
-      toEditProfile() {
-        this.$router.push({ name: 'editProfile' })
-      },
-      toFavorite() {
-        this.$router.push({ name: 'favorite' })
-      },
-      async removeMember() {
-        try {
-          const { isConfirmed } = await this.$swal({
-              title: 'ยืนยัน',
-              text: 'คุณต้องการลบบัญชีผู้ใช้นี้หรือไม่',
-              icon: 'warning',
-              showConfirmButton: true,
-              showCancelButton: true,
-              confirmButtonText: 'ลบ',
-              cancelButtonText: 'ยกเลิก',
-              confirmButtonColor: '#d14529'
-            })
-          if (isConfirmed) {
-            const deletedMember = await Axios({
-              method: 'DELETE',
-              url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`
-            })
-            if (!deletedMember) {
-              throw { messages: 'ไม่สามารถลบบัญชีผู้ใช้ได้' }
-            }
-            await firebase.auth().currentUser.delete()
-            this.$swal({
-              text: 'ลบบัญชีสำเร็จ',
-              icon: 'success',
-              iconColor: 'white',
-              toast: true,
-              position: 'top',
-              background: '#44b348',
-              showConfirmButton: false,
-              timer: 1500
-            })
-            this.$router.replace({ name: 'login' })
-          }
-        } catch (error) {
-          const message = (error.messages) ? error.messages : error.message
-          this.$swal('ข้อผิดพลาด', message, 'error')
-        }
+      toMyprofile() {
+        this.$router.push(`/profile/${sessionStorage.getItem('memberId')}`)
       },
       toReport() {
         this.$router.push({ name: 'report' })
@@ -121,10 +73,16 @@ import Axios from 'axios'
   .vl {
     border-left: 2px solid whitesmoke;
     height: 40px;
-    
   }
-  .front
-  {
+  .front {
     font-family: 'Athiti', sans-serif;
+  }
+  .profile {
+    display: flex;
+    flex-direction: row;
+  }
+  .profile:hover {
+    cursor: pointer;
+    background-color: #ececec;
   }
 </style>

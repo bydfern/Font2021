@@ -13,6 +13,7 @@ import Report from './components/report.vue'
 import AllEvent from './components/all-event.vue'
 import CreateEvent from './components/create-event.vue'
 import Event from './components/event.vue'
+import profile from './components/profile.vue'
 
 
 Vue.use(Router)
@@ -84,6 +85,11 @@ export default new Router({
       name: 'event',
       path: '/event/:id',
       component: Event
+    },
+    {
+      name: 'profile',
+      path: '/profile/:id',
+      component: profile
     }
   ],
 })

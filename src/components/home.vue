@@ -285,46 +285,44 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
-  .front
-  {
+  @import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  .front {
     font-family: 'Athiti', sans-serif;
   }
-  
-.v-card {
-  max-width: 1000px;
-}
-.bodyy {
-  display: flex;
-  font-family: 'Athiti', sans-serif;
-  color: #fff;
-  background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
-  min-height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  padding: 0px 50px 0px 50px;
-}
-.dataQuery {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-}
-.paginate {
-  width: 50%;
-  margin-left: auto;
-  display: flex;
-  flex-direction: row;
-}
-.menu-bar {
-  position: fixed;
-}
-.rounded-card {
-  border-radius: 10px;
-}
-.bg{
-  background-color: #fff;
-  width: 100%;
-  height: 100%;
-}
+  .v-card {
+    max-width: 1000px;
+  }
+  .bodyy {
+    display: flex;
+    font-family: 'Athiti', sans-serif;
+    color: #fff;
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
+    min-height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    padding: 0px 50px 0px 50px;
+  }
+  .dataQuery {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+  .paginate {
+    width: 50%;
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+  }
+  .menu-bar {
+    position: fixed;
+  }
+  .rounded-card {
+    border-radius: 10px;
+  }
+  .bg{
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+  }
 </style>

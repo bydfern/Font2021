@@ -16,5 +16,10 @@ new Vue({
   store,
   render: h => h(App),
   vuetify,
-  router
+  router,
+  watch:{
+    '$route' (page) {
+      if(page.name === 'profile'){window.location.reload()}
+    }
+  },
 }).$mount('#app')

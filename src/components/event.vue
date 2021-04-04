@@ -329,8 +329,9 @@ import Helper from '../helper/helper'
             const payload = {
               eventId: this.event._id,
               eventName: this.event.name,
-              memberId: sessionStorage.getItem('memberId'),
-              memberName: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
+              memberId: this.event.memberId,
+              registerId: sessionStorage.getItem('memberId'),
+              registerName: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
               memberEmail: sessionStorage.getItem('email'),
               detail: value
             }

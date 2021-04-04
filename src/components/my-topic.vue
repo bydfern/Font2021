@@ -99,7 +99,7 @@
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
   .v-card {
     max-width: 1200px;
   }
@@ -107,8 +107,7 @@
     display: flex;
     flex-direction: row;
   }
-  .front
-  {
+  .front {
     font-family: 'Athiti', sans-serif;
   }
 </style>
