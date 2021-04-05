@@ -11,6 +11,7 @@
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
           <span>จำนวนผู้ติดตาม: {{event.following.length}}</span>
+          <span>จำนวนผู้เข้าร่วม: {{totalAccept}}</span>
           <v-btn
               color="primary"
               icon
@@ -359,7 +360,7 @@ import Helper from '../helper/helper'
         })
         this.register = registerData
         this.totalAccept = registerData.filter(register => register.acceptStatus === 1).length
-        const myRegister = registerData.find(register => register.memberId === sessionStorage.getItem('memberId'))
+        const myRegister = registerData.find(register => register.registerId === sessionStorage.getItem('memberId'))
         if (myRegister) {
           this.statusRegister = myRegister.acceptStatus
           this.myRegister = myRegister

@@ -267,11 +267,12 @@ export default {
       this.totalPage = Math.ceil(topicsResult.total / this.pageSize);
     },
     async getEvent3() {
-      const { data: eventRe } = await Axios({
+      const { data: { data: event } } = await Axios({
         method: "GET",
-        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?$limit=3`,
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?endDate[$gte]=${moment().toString()}&$limit=5&$sort[following]=-1`,
       });
-      this.event = eventRe.data;
+      event.splice(3, Math.abs(5 - event.length))
+      this.event = event;
     },
     async getFollowedEvents() {
       const { data: { data: events } } = await Axios({

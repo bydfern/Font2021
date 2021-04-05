@@ -27,7 +27,7 @@
           </div>
           <v-tabs v-model="currentTab">
             <v-tab><span v-if="isMyProfile" @click="getTopic()">กระทู้ของฉัน</span><span v-else>กระทู้</span></v-tab>
-            <v-tab><span v-if="isMyProfile">กิจกรรมของฉัน</span><span v-else>กิจกรรม</span></v-tab>
+            <!-- <v-tab><span v-if="isMyProfile">กิจกรรมของฉัน</span><span v-else>กิจกรรม</span></v-tab> -->
             <v-tab v-if="isMyProfile" @click="getFavoriteTopics()">รายการโปรด</v-tab>
             <v-tab v-if="isMyProfile"  @click="getRegisterEvent()">คำขอเข้าร่วมกิจกรรม</v-tab>
             <v-tab-item>
@@ -62,9 +62,9 @@
                 </v-card-text>  
               </v-card>
             </v-tab-item>
-            <v-tab-item>
+            <!-- <v-tab-item> -->
               <!-- กิจกรรม -->
-            </v-tab-item>
+            <!-- </v-tab-item> -->
             <v-tab-item>
               <!-- รายการโปรด -->
               <v-card flat>
