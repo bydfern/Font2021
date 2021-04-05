@@ -332,7 +332,7 @@ import Helper from '../helper/helper'
               memberId: this.event.memberId,
               registerId: sessionStorage.getItem('memberId'),
               registerName: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
-              memberEmail: sessionStorage.getItem('email'),
+              registerEmail: sessionStorage.getItem('email'),
               detail: value
             }
             const result = await Axios({
