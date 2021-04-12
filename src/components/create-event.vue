@@ -22,6 +22,7 @@
           <v-text-field label="สถานที่*" v-if="!typeEvent" v-model="location"></v-text-field>
           <v-date-picker v-model="startDate" />
           <v-date-picker class="mx-5" v-model="endDate" />
+          <v-text-field label="จำนวนคนที่รับ" v-model="totalRegister"></v-text-field>
           <v-file-input
             accept="image/*"
             placeholder="เลือกรูปโปสเตอร์"
@@ -145,7 +146,8 @@ import Axios from 'axios'
           { text: 'นอกสถานที่', value: 0 },
           { text: 'ออนไลน์', value: 1 }
         ],
-        email: sessionStorage.getItem('email')
+        email: sessionStorage.getItem('email'),
+        totalRegister: 20
       }
     },
     methods: {
@@ -247,7 +249,8 @@ import Axios from 'axios'
             posterUrl: this.posterData.posterUrl,
             posterName: this.posterData.posterName,
             contents: this.content,
-            memberId: sessionStorage.getItem('memberId')
+            memberId: sessionStorage.getItem('memberId'),
+            totalRegister: this.totalRegister
           }
           const result = await Axios({
             method: 'POST',

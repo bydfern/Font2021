@@ -11,7 +11,7 @@
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
           <span>จำนวนผู้ติดตาม: {{event.following.length}}</span>
-          <span>จำนวนผู้เข้าร่วม: {{totalAccept}}</span>
+          <span>จำนวนผู้เข้าร่วม: {{totalAccept}} / {{event.totalRegister}}</span>
           <v-btn
               color="primary"
               icon
@@ -39,9 +39,10 @@
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
         <v-icon v-if="item.type == 'file'">mdi-file-document-outline</v-icon><a v-if="item.type == 'file'" :href="item.value">{{item.name}}</a>
       </div>
-      <div class="getTicket mt-8">
-        <v-btn v-if="statusRegister === -1 || statusRegister === 0" rounded color="success" @click="registerEvent()">สมัครเข้าร่วม</v-btn>
-        <v-btn v-else-if="statusRegister === 1" disabled rounded>สมัครเข้าร่วมแล้ว</v-btn>
+      <div v-if="!myEvent" class="getTicket mt-8">
+        <v-btn v-if="statusRegister === 1" disabled rounded>สมัครเข้าร่วมแล้ว</v-btn>
+        <v-btn v-else-if="totalAccept == event.totalRegister" disabled rounded>เต็มแล้ว</v-btn>
+        <v-btn v-else-if="statusRegister === -1 || statusRegister === 0" rounded color="success" @click="registerEvent()">สมัครเข้าร่วม</v-btn>
         <v-btn v-else-if="statusRegister === 2" color="#FFE12B" rounded @click="cancelRegister()">กำลังรออนุมัติ</v-btn>
       </div>
       <h2 class="my-3">แสดงความคิดเห็น</h2>
@@ -145,7 +146,8 @@ import Helper from '../helper/helper'
         register: [],
         statusRegister: -1,
         totalAccept: 0,
-        myRegister: ''
+        myRegister: '',
+        myEvent: true
       }
     },
     async created () {
@@ -180,6 +182,7 @@ import Helper from '../helper/helper'
         events.comments = comments
         this.event = events
         this.isFollowed = events.following.includes(sessionStorage.getItem('memberId'))
+        this.myEvent = events.memberId == sessionStorage.getItem('memberId')
       },
       formatDate(date) {
         return moment(date).format('YYYY-MM-DD')
@@ -382,7 +385,7 @@ import Helper from '../helper/helper'
             const result = await Axios({
               method: 'PATCH',
               url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event/${this.myRegister._id}`,
-              data: { status: 0 }
+              data: { status: 0, acceptStatus: 0 }
             })
             if (!result) {
               throw { messages: 'ยกเลิกล้มเหลวกรุณาลองใหม่อีกครั้ง' }

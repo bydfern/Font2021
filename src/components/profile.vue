@@ -261,6 +261,14 @@
               throw { messages: 'ไม่สามารดำเนินการได้กรุณาลองใหม่อีกครั้ง' }
             }
             this.data.splice(index, 1)
+            Axios({
+              method: 'POST',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/send-email`,
+              data: {
+                email: register.registerEmail,
+                message: `เจ้าของกิจกรรม ${register.eventName} ได้ปฎิเสธการเข้าร่วมของคุณ`
+              }
+            })
             this.$swal('สำเร็จ', 'ปฏิเสธการขอเข้าร่วมสำเร็จ', 'success')
           }
         } catch (error) {
@@ -291,6 +299,14 @@
               throw { messages: 'ไม่สามารดำเนินการได้กรุณาลองใหม่อีกครั้ง' }
             }
             this.data.splice(index, 1)
+            Axios({
+              method: 'POST',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/send-email`,
+              data: {
+                email: register.registerEmail,
+                message: `เจ้าของกิจกรรม ${register.eventName} ได้อนุมัติให้คุณเข้าร่วมกิจกรรมแล้ว`
+              }
+            })
             this.$swal('สำเร็จ', 'อนุมัติการขอเข้าร่วมสำเร็จ', 'success')
           }
         } catch (error) {
