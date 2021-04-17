@@ -52,6 +52,7 @@
                   :src="item.posterUrl"
                   reverse-transition="fade-transition"
                   transition="fade-transition"
+                  @click="$router.push(`/event/${item._id}`)"
                 ></v-carousel-item>
               </v-carousel>
             </v-col>

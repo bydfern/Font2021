@@ -359,7 +359,7 @@ import Helper from '../helper/helper'
       async getRegisterData() {
         const { data: { data: registerData } } = await Axios({
           method: 'GET',
-          url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event?eventId=${this.$route.params.id}`
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event?eventId=${this.$route.params.id}&$sort[createdAt]=-1`
         })
         this.register = registerData
         this.totalAccept = registerData.filter(register => register.acceptStatus === 1).length

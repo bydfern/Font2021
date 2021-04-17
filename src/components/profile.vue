@@ -26,8 +26,8 @@
             </div>
           </div>
           <v-tabs v-model="currentTab">
-            <v-tab><span v-if="isMyProfile" @click="getTopic()">กระทู้ของฉัน</span><span v-else>กระทู้</span></v-tab>
-            <!-- <v-tab><span v-if="isMyProfile">กิจกรรมของฉัน</span><span v-else>กิจกรรม</span></v-tab> -->
+            <v-tab @click="getTopic()"><span v-if="isMyProfile">กระทู้ของฉัน</span><span v-else>กระทู้</span></v-tab>
+            <v-tab @click="getEvent()"><span v-if="isMyProfile">กิจกรรมของฉัน</span><span v-else>กิจกรรม</span></v-tab>
             <v-tab v-if="isMyProfile" @click="getFavoriteTopics()">รายการโปรด</v-tab>
             <v-tab v-if="isMyProfile"  @click="getRegisterEvent()">คำขอเข้าร่วมกิจกรรม</v-tab>
             <v-tab-item>
@@ -62,9 +62,33 @@
                 </v-card-text>  
               </v-card>
             </v-tab-item>
-            <!-- <v-tab-item> -->
+            <v-tab-item>
               <!-- กิจกรรม -->
-            <!-- </v-tab-item> -->
+              <v-card flat>
+                <v-card-text>
+                  <v-simple-table>
+                    <thead>
+                      <tr>
+                        <th style="width: 30%;">ชื่อ</th>
+                        <th style="width: 30%;">รายละเอียด</th>
+                        <th style="width: 15%;">วันที่เริ่ม</th>
+                        <th style="width: 15%;">วันที่สิ้นสุด</th>
+                        <th style="width: 10%;">จำนวนคนติดตาม</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="event in data" :key="event._id">
+                        <td @click="$router.push(`/event/${event._id}`)">{{event.name}}</td>
+                        <td @click="$router.push(`/event/${event._id}`)"><div class="longText">{{event.detail}}</div></td>
+                        <td @click="$router.push(`/event/${event._id}`)">{{formatDate(event.startDate)}}</td>
+                        <td @click="$router.push(`/event/${event._id}`)">{{formatDate(event.endDate)}}</td>
+                        <td @click="$router.push(`/event/${event._id}`)" v-if="event.following">{{event.following.length}}</td>
+                      </tr>
+                    </tbody>
+                  </v-simple-table>
+                </v-card-text>
+              </v-card>
+            </v-tab-item>
             <v-tab-item>
               <!-- รายการโปรด -->
               <v-card flat>
@@ -324,6 +348,13 @@
         })
         this.data = myTopic
       },
+      async getEvent() {
+        const { data: { data: myEvent } } = await Axios({
+          method: 'GET',
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?memberId=${this.member._id}&$sort[endDate]=-1`
+        })
+        this.data = myEvent
+      }
     },
   }
 </script>
