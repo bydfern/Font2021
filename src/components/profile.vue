@@ -14,7 +14,13 @@
               <h3><i class="mr-3">มหาวิทยาลัย: </i>{{member.university || '-'}}</h3>
               <h3><i class="mr-3">คณะ: </i>{{member.faculty || '-'}}</h3>
               <h3><i class="mr-3">สาขาวิชา: </i>{{member.department || '-'}}</h3>
-              <h3><i class="mr-3">อันดับ: </i>{{helper.showRank(member.exp)}}</h3>
+              <h3><i class="mr-3">อันดับ: </i>{{helper.showRank(member.exp)}}  
+                <v-progress-linear
+                  v-model= "explank"
+                  color="amber"
+                  height="25"
+                ></v-progress-linear>
+              </h3>
               <div class="actionButton" v-if="isMyProfile">
                 <v-btn class="my-3 mr-3" small style="max-width: 150px;" color="#f0d42b" @click="$router.push({ name: 'editProfile' })">
                   <v-icon color="white">mdi-pencil</v-icon>
@@ -172,6 +178,9 @@
       return {
         member: {},
         helper: new Helper(),
+        /////////////// นีนเอง
+        explank : 50,
+        /////////////////////////
         isMyProfile: false,
         data: [],
         currentTab: 0

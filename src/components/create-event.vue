@@ -20,8 +20,60 @@
             v-model="typeEvent"
           />
           <v-text-field label="สถานที่*" v-if="!typeEvent" v-model="location"></v-text-field>
-          <v-date-picker v-model="startDate" />
-          <v-date-picker class="mx-5" v-model="endDate" />
+          <v-row>
+            <v-cal cols="3">
+              <v-menu
+                v-model="menu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="startDate"
+                    label="Start Date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="startDate"
+                  @input="menu = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-cal>
+            <v-cal cols="3">
+              <v-menu
+                v-model="menu2"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="endDate"
+                    label="End Date"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="endDate"
+                  @input="menu2 = false"
+                ></v-date-picker>
+              </v-menu>
+            </v-cal>
+          </v-row>
+          <!-- <v-date-picker v-model="startDate" />
+          <v-date-picker class="mx-5" v-model="endDate" /> -->
           <v-text-field label="จำนวนคนที่รับ" v-model="totalRegister"></v-text-field>
           <v-file-input
             accept="image/*"
@@ -129,6 +181,11 @@ import Axios from 'axios'
     },
     data() {
       return {
+      
+        date: new Date().toISOString().substr(0, 10),
+        menu: false,
+        menu2: false,
+        
         name: '',
         detail: '',
         startDate: moment().format('YYYY-MM-DD'),
