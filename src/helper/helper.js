@@ -15,6 +15,22 @@ class Helpers {
 
     return rank
   }
+
+  progressRank(exp) {
+    if (exp >= 150000) {
+      return 100
+    } else if (exp >= 5000) {
+      return ((exp - 5000) / 145000) * 100
+    } else if (exp >= 3000) {
+      return ((exp - 3000) / 2000) * 100
+    } else if (exp >= 1500) {
+      return ((exp - 1500) / 1500) * 100
+    } else if (exp >= 600) {
+      return ((exp - 600) / 900) * 100
+    } else {
+      return (exp / 600) * 100
+    }
+  }
 }
 
 export default Helpers

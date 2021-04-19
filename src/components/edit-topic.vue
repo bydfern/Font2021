@@ -98,7 +98,6 @@
           if (!topicData) {
             throw { messages: 'ไม่พบกระทู้นี้' }
           }
-          console.log(topicData)
           this.title = topicData.title
           this.subject = topicData.subject
           this.content = topicData.content

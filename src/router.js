@@ -14,6 +14,7 @@ import AllEvent from './components/all-event.vue'
 import CreateEvent from './components/create-event.vue'
 import Event from './components/event.vue'
 import profile from './components/profile.vue'
+import EditEvent from './components/edit-event.vue'
 
 
 Vue.use(Router)
@@ -90,6 +91,11 @@ export default new Router({
       name: 'profile',
       path: '/profile/:id',
       component: profile
+    },
+    {
+      name: 'editEvent',
+      path: '/edit-event/:id',
+      component: EditEvent
     }
   ],
 })

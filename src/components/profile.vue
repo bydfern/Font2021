@@ -15,11 +15,12 @@
               <h3><i class="mr-3">คณะ: </i>{{member.faculty || '-'}}</h3>
               <h3><i class="mr-3">สาขาวิชา: </i>{{member.department || '-'}}</h3>
               <h3><i class="mr-3">อันดับ: </i>{{helper.showRank(member.exp)}}  
-                <v-progress-linear
-                  v-model= "explank"
-                  color="amber"
-                  height="25"
-                ></v-progress-linear>
+              <v-progress-linear
+                class="mt-3"
+                :value= "helper.progressRank(member.exp)"
+                color="primary"
+                height="4"
+              ></v-progress-linear>
               </h3>
               <div class="actionButton" v-if="isMyProfile">
                 <v-btn class="my-3 mr-3" small style="max-width: 150px;" color="#f0d42b" @click="$router.push({ name: 'editProfile' })">
@@ -80,15 +81,20 @@
                         <th style="width: 15%;">วันที่เริ่ม</th>
                         <th style="width: 15%;">วันที่สิ้นสุด</th>
                         <th style="width: 10%;">จำนวนคนติดตาม</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="event in data" :key="event._id">
+                      <tr v-for="(event, index) in data" :key="event._id">
                         <td @click="$router.push(`/event/${event._id}`)">{{event.name}}</td>
                         <td @click="$router.push(`/event/${event._id}`)"><div class="longText">{{event.detail}}</div></td>
                         <td @click="$router.push(`/event/${event._id}`)">{{formatDate(event.startDate)}}</td>
                         <td @click="$router.push(`/event/${event._id}`)">{{formatDate(event.endDate)}}</td>
                         <td @click="$router.push(`/event/${event._id}`)" v-if="event.following">{{event.following.length}}</td>
+                        <td class="actionBtn" v-if="isMyProfile">
+                          <v-icon @click="$router.push(`/edit-event/${event._id}`)" large medium color="#FBC02D">mdi-pencil-circle</v-icon>
+                          <v-icon class="mx-1" large @click="removeEvent(event._id, index)" medium color="red">mdi-delete-circle</v-icon>
+                        </td>
                       </tr>
                     </tbody>
                   </v-simple-table>
@@ -178,9 +184,7 @@
       return {
         member: {},
         helper: new Helper(),
-        /////////////// นีนเอง
-        explank : 50,
-        /////////////////////////
+        explank : 0,
         isMyProfile: false,
         data: [],
         currentTab: 0
@@ -323,6 +327,18 @@
             cancelButtonColor: '#d14529'
           })
           if (isConfirmed) {
+            const registerData = await Axios({
+              method: 'GET',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${register.registerId}?status=1`,
+            })
+            if (!registerData) {
+              throw { messages: 'ไม่พบข้อมูลผู้สมัคร' }
+            }
+            Axios({
+              method: 'PATCH',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${registerData._id}`,
+              data: { exp: registerData.exp + 3 }
+            })
             const result = await Axios({
               method: 'PATCH',
               url: `${process.env.VUE_APP_SERVER_BASE_URL}/register-event/${register._id}`,
@@ -363,6 +379,62 @@
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?memberId=${this.member._id}&$sort[endDate]=-1`
         })
         this.data = myEvent
+      },
+      async removeTopic(id, index) {
+        try {
+          const { isConfirmed } = await this.$swal({
+            title: 'ยืนยัน',
+            text: 'คุณต้องการลบกระทู้นี้หรือไม่',
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#d14529'
+          })
+          if (isConfirmed) {
+            const deletedTopic = await Axios({
+              method: 'DELETE',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${id}`
+            })
+            if (!deletedTopic) {
+              throw { messages: 'ลบกระทู้ไม่สำเร็จ' }
+            }
+            this.data.splice(index, 1)
+            this.$swal('สำเร็จ', 'ลบกระทู้สำเร็จ', 'success')
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด',  message, 'error')
+        }
+      },
+      async removeEvent(id, index) {
+        try {
+          const { isConfirmed } = await this.$swal({
+            title: 'ยืนยัน',
+            text: 'คุณต้องการลบกิจกรรมนี้หรือไม่',
+            icon: 'warning',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: 'ลบ',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonColor: '#d14529'
+          })
+          if (isConfirmed) {
+            const deletedEvent = await Axios({
+              method: 'DELETE',
+              url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${id}`
+            })
+            if (!deletedEvent) {
+              throw { messages: 'ลบกิจกรรมไม่สำเร็จ' }
+            }
+            this.data.splice(index, 1)
+            this.$swal('สำเร็จ', 'ลบกิจกรรมสำเร็จ', 'success')
+          }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด',  message, 'error')
+        }
       }
     },
   }

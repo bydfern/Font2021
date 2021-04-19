@@ -48,25 +48,56 @@
           </v-card>
         </v-col>
         <v-col cols="9">
-      
           <v-card>
             <v-card-title>กิจกรรม</v-card-title>
             <v-card-text>
-              <v-card max-width="100%" class="mx-auto">
-                <v-container class="pa-1">
-                  <v-item-group multiple>
-                    <v-row>
-                        <div class="event my-3 mx-3" v-for="event in events" :key="event._id" @click="$router.push(`/event/${event._id}`)">
-                          <img :src="event.posterUrl" width="170px" height="200px">
-                          <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
-                          <span><b>{{event.name}}</b></span>
-                          <span v-if="event.typeEvent">ออนไลน์</span>
-                          <span v-else>สถานที่: {{event.location}}</span> 
-                        </div>
-                    </v-row>
-                  </v-item-group>
-                </v-container>
-              </v-card>
+              <div class="dataQuery">
+                <v-text-field
+                  placeholder="ค้นหา"
+                  style="width: 60%;"
+                  outlined
+                  prepend-inner-icon="mdi-magnify"
+                  v-model="search"
+                  clearable
+                  dense
+                  @input="query()"
+                />
+                <v-select
+                  class="mx-2"
+                  :items="sortByItems"
+                  label="เรียงลำดับ"
+                  dense
+                  outlined
+                  v-model="sortBy"
+                  @change="query()"
+                />
+                <v-select
+                  style="width: 10px;"
+                  :items="sortOrderItems"
+                  label="เรียงลำดับ"
+                  dense
+                  outlined
+                  v-model="sortOrder"
+                  @change="query()"
+                />
+              </div>
+              <div>
+                <v-card max-width="100%" class="mx-auto">
+                  <v-container class="pa-1">
+                    <v-item-group multiple>
+                      <v-row>
+                          <div class="event my-3 mx-3" v-for="event in events" :key="event._id" @click="$router.push(`/event/${event._id}`)">
+                            <img :src="event.posterUrl" width="170px" height="200px">
+                            <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
+                            <span><b>{{event.name}}</b></span>
+                            <span v-if="event.typeEvent">ออนไลน์</span>
+                            <span v-else>สถานที่: {{event.location}}</span> 
+                          </div>
+                      </v-row>
+                    </v-item-group>
+                  </v-container>
+                </v-card>
+              </div>
             </v-card-text>
           </v-card>
         </v-col>
@@ -90,7 +121,23 @@ import moment from 'moment'
         events: [],
         getUser: `${sessionStorage.getItem('firstName')} ${sessionStorage.getItem('lastName')}`,
         getProfile : sessionStorage.getItem("profileUrl"),
-        eventsFollowed: []
+        eventsFollowed: [],
+        sortByItems: [
+          { text: "ชื่อ", value: "name" },
+          { text: "ผู้ติดตาม", value: "following" },
+          { text: "วันที่เริ่ม", value: "startDate" },
+          { text: "วันที่สิ้นสุด", value: "endDate" }
+        ],
+        sortBy: "endDate",
+        sortOrderItems: [
+          { text: "▲", value: -1 },
+          { text: "▼", value: 1 },
+        ],
+        sortOrder: -1,
+        search: "",
+        pageSize: 10,
+        currentPage: 1,
+        totalPage: 1,
       }
     },
     async created () {
@@ -106,7 +153,7 @@ import moment from 'moment'
       async getEvents() {
         const { data: { data: events } } = await Axios({
           method: 'GET',
-          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events`
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?$sort[endDate]=-1&$skip=0&$limit=10`
         })
         this.events = events
       },
@@ -119,7 +166,20 @@ import moment from 'moment'
       },
       formatDate(date) {
         return moment(date).format('YYYY-MM-DD')
-      }
+      },
+      async query() {
+        const skip = (this.currentPage - 1) * this.pageSize
+        if (!this.search) {
+          this.search = ""
+        }
+        const search = `$or[0][name][$regex]=${this.search}&$or[1][detail][$regex]=${this.search}`
+        const { data: eventResult } = await Axios({
+          method: "GET",
+          url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?$sort[${this.sortBy}]=${this.sortOrder}&${search}&$limit=${this.pageSize}&$skip=${skip}`,
+        })
+        this.events = eventResult.data
+        this.totalPage = Math.ceil(eventResult.total / this.pageSize)
+      },
     },
   }
 </script>
@@ -156,5 +216,13 @@ import moment from 'moment'
     background-repeat: no-repeat;
     background-position: center center;
     padding: 0px 50px 0px 50px;
+  }
+  .dataQuery {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+  .v-card__text {
+    flex-direction: column;
   }
 </style>

@@ -33,7 +33,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="startDate"
-                    label="วันที่เริ่ม"
+                    label="Start Date"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -58,7 +58,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
                     v-model="endDate"
-                    label="วันที่จบ"
+                    label="End Date"
                     prepend-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -205,7 +205,37 @@ import Axios from 'axios'
         totalRegister: 20
       }
     },
+    async created () {
+      await this.getEvent()
+    },
     methods: {
+      async getEvent() {
+        try {
+          const { data: event } = await Axios({
+            method: 'GET',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${this.$route.params.id}`
+          })
+          if (!event) {
+            throw { messages: 'ไม่พบข้อมูลกิจกรรม' }
+          }
+          this.name = event.name
+          this.detail = event.detail
+          this.startDate = event.startDate
+          this.endDate = event.endDate
+          this.content = event.contents
+          this.posterData = {
+            posterUrl: event.posterUrl,
+            posterName: event.posterName
+          }
+          this.typeEvent = event.typeEvent
+          this.location = event.location
+          this.totalRegister = event.totalRegister
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด', message, 'error')
+          this.$router.go(-1)
+        }
+      },
       async savePoster() {
         this.loadPoster = true
         const name = Date.now().toString()
@@ -287,7 +317,7 @@ import Axios from 'axios'
             firebase.storage().ref(this.email).child('event').child(this.content[i].name).delete()
           }
         }
-        this.$router.push({ name: 'event' })
+        this.$router.go(-1)
       },
       async save() {
         try {
@@ -311,21 +341,14 @@ import Axios from 'axios'
             totalRegister: this.totalRegister
           }
           const result = await Axios({
-            method: 'POST',
-            url: `${process.env.VUE_APP_SERVER_BASE_URL}/events`,
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${this.$route.params.id}`,
             data: payload
           })
           if (!result) {
-            throw { messages: 'สร้างกิจกรรมผิดพลาด' }
+            throw { messages: 'แก้ไขกิจกรรมผิดพลาด' }
           }
-          const exp = Number(sessionStorage.getItem('exp')) + 5
-          sessionStorage.setItem('exp', exp)
-          Axios({
-            method: 'PATCH',
-            url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
-            data: { exp }
-          })
-          this.$swal('สำเร็จ', 'สร้างกิจกรรม +5 exp', 'success')
+          this.$swal('สำเร็จ', 'แก้ไขกิจกรรม', 'success')
           this.$router.push({ name: 'allEvent' })
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message

@@ -92,10 +92,12 @@ export default {
         ) {
           throw { messages: "กรุณายืนยันอีเมลก่อนเข้าใช้งาน" }
         }
+        let textLogin = 'เข้าสู่ระบบสำเร็จ'
         if (
           moment(memberData.data[0].lastLogin).format("YYYY-MM-DD") !==
           moment().format("YYYY-MM-DD")
         ) {
+          textLogin = 'เข้าสู่ระบบครั้งแรกของวัน +1 exp'
           const payload = {
             exp: memberData.data[0].exp + 1,
             lastLogin: moment().format("YYYY-MM-DD"),
@@ -115,7 +117,7 @@ export default {
         sessionStorage.setItem("role", memberData.data[0].role)
         sessionStorage.setItem("exp", memberData.data[0].exp)
         this.$swal({
-          text: "เข้าสู่ระบบสำเร็จ",
+          text: textLogin,
           icon: "success",
           iconColor: "white",
           toast: true,

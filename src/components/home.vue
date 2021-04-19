@@ -42,10 +42,10 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="9">
+        <v-col cols="13">
           <v-row>
-            <v-col cols="8">
-              <v-carousel height="300" class="rounded-card">
+            <v-col cols="12">
+              <v-carousel height="400" class="rounded-card">
                 <v-carousel-item
                   v-for="(item, i) in event"
                   :key="i"
@@ -56,7 +56,7 @@
                 ></v-carousel-item>
               </v-carousel>
             </v-col>
-            <v-col cols="4">
+            <!-- <v-col cols="4">
               <v-card class="mx-auto" max-width="100%" height="100%">
                 <center>
                   <v-card-title>Discover your Great Experience</v-card-title>
@@ -75,11 +75,14 @@
                   </center>
               </v-card>
               
-            </v-col>
+            </v-col> -->
           </v-row>
           <br />
           <v-card class="mx-auto" max-width="100%">
             <v-card-text>
+              <div class="addTopic">
+                  <v-btn class="my-3" color="success" @click="toCreateTopic()">สร้างกิจกรรม</v-btn>
+              </div>
                 <v-chip-group
                   v-model="neighborhoods"
                   column
@@ -118,8 +121,9 @@
               <div class="dataQuery">
                 <v-text-field
                   placeholder="ค้นหา"
-                  style="width: 50%;"
+                  style="width: 60%;"
                   outlined
+                  dense
                   prepend-inner-icon="mdi-magnify"
                   v-model="search"
                   clearable
@@ -135,7 +139,7 @@
                   @change="query()"
                 />
                 <v-select
-                  style="width: 20%;"
+                  style="width: 10px;"
                   :items="sortOrderItems"
                   label="เรียงลำดับ"
                   dense
@@ -217,8 +221,8 @@ export default {
       ],
       sortBy: "createdAt",
       sortOrderItems: [
-        { text: "▲ มาก", value: -1 },
-        { text: "▼ น้อย", value: 1 },
+        { text: "▲", value: -1 },
+        { text: "▼", value: 1 },
       ],
       sortDiscover: [
         { text: "New Event", value: -1 },
@@ -282,6 +286,9 @@ export default {
       })
       this.eventsFollowed = events
     },
+    toCreateTopic() {
+      this.$router.push({ name: 'createTopic' })
+    },
   },
 };
 </script>
@@ -326,5 +333,9 @@ export default {
     background-color: #fff;
     width: 100%;
     height: 100%;
+  }
+  .addTopic {
+    display: flex;
+    flex-direction: row-reverse;
   }
 </style>

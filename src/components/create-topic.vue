@@ -217,7 +217,7 @@
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
             data: { exp }
           })
-          this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ', 'success')
+          this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ +5 exp', 'success')
           this.$router.push({ name: 'home' })
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message

@@ -1,6 +1,5 @@
 <template>
-  <div class="front"> 
-    <div class="container">
+    <div class="container front">
       <v-card class="mx-auto mt-3">
         <v-card-title>สมัครสมาชิก</v-card-title>
         <v-card-text>
@@ -38,8 +37,6 @@
         </v-card-text>
       </v-card>
     </div>
-  </div> 
-  
 </template>
 
 <script>
@@ -66,7 +63,8 @@
         showPassword: false,
         showConfirmPassword: false,
         loadStatus: false,
-        imageData: null
+        imageData: null,
+        showBirthday: false
       }
     },
     methods: {
@@ -141,9 +139,6 @@
 <style scoped>
 
 @import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
-
-
-
   .container {
     padding-top: 80px;
     height: 100%;

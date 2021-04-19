@@ -11,8 +11,9 @@
       <!-- <div class="vl mx-2"></div> -->
       <v-btn text @click="toHome()">หน้าหลัก</v-btn>
       <v-btn text @click="toEvent()">กิจกรรม</v-btn>
-      <v-btn text @click="toCreateTopic()">สร้างกระทู้</v-btn>
-      <v-menu bottom left>
+      <v-btn text @click="logout()">ออกจากระบบ</v-btn>
+      <v-btn text v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-btn>
+      <!-- <v-menu bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon v-bind="attrs" v-on="on"><v-icon>mdi-dots-vertical</v-icon></v-btn>
         </template>
@@ -22,7 +23,7 @@
             <v-list-item v-if="role === 'admin'" @click="toReport()">จัดการรายงาน</v-list-item>
           </div>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
   </div>
 </template>
@@ -41,9 +42,21 @@
     methods: {
       async logout() {
         try {
-          firebase.auth().signOut()
-          sessionStorage.clear()
-          this.$router.replace({ name: 'login' })
+          const { isConfirmed } = await this.$swal({
+              title: 'ยืนยัน',
+              text: 'ต้องการออกจากระบบใช่หรอไม่',
+              icon: 'warning',
+              showConfirmButton: true,
+              showCancelButton: true,
+              confirmButtonText: 'ออกจากระบบ',
+              cancelButtonText: 'ยกเลิก',
+              confirmButtonColor: '#d14529'
+            })
+          if (isConfirmed) {
+            firebase.auth().signOut()
+            sessionStorage.clear()
+            this.$router.replace({ name: 'login' })
+          }
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
@@ -51,9 +64,6 @@
       },
       toHome() {
         this.$router.push({ name: 'home' })
-      },
-      toCreateTopic() {
-        this.$router.push({ name: 'createTopic' })
       },
       toMyprofile() {
         this.$router.push(`/profile/${sessionStorage.getItem('memberId')}`)

@@ -236,6 +236,16 @@
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
             data: { exp }
           })
+          this.$swal({
+          text: 'แสดงความคิดเห็น +3 exp',
+          icon: "success",
+          iconColor: "white",
+          toast: true,
+          position: "top",
+          background: "#44b348",
+          showConfirmButton: false,
+          timer: 1500,
+        })
           this.comment = null
           this.attachment = []
           this.loadSaveCommentStatus = false
@@ -255,18 +265,28 @@
         } else {
           this.topic.like.push(memberId)
           this.likeColor = 'red'
+          const exp = Number(sessionStorage.getItem('exp')) + 1
+          sessionStorage.setItem('exp', exp)
+          Axios({
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${memberId}`,
+            data: { exp }
+          })
+          this.$swal({
+            text: 'กดถูกใจ +1 exp',
+            icon: "success",
+            iconColor: "white",
+            toast: true,
+            position: "top",
+            background: "#44b348",
+            showConfirmButton: false,
+            timer: 1500,
+          })
         }
         Axios({
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
           data: { like: this.topic.like }
-        })
-        const exp = Number(sessionStorage.getItem('exp')) + 1
-        sessionStorage.setItem('exp', exp)
-        Axios({
-          method: 'PATCH',
-          url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${memberId}`,
-          data: { exp }
         })
       },
       favorite() {

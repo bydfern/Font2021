@@ -11,7 +11,7 @@
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
           <span>จำนวนผู้ติดตาม: {{event.following.length}}</span>
-          <span>จำนวนผู้เข้าร่วม: {{totalAccept}} / {{event.totalRegister}}</span>
+          <span>จำนวนผู้เข้าร่วม: {{totalAccept}} / {{event.totalRegister || 0}}</span>
           <v-btn
               color="primary"
               icon
@@ -291,6 +291,16 @@ import Helper from '../helper/helper'
             url: `${process.env.VUE_APP_SERVER_BASE_URL}/members/${sessionStorage.getItem('memberId')}`,
             data: { exp }
           })
+          this.$swal({
+          text: 'แสดงความคิดเห็น +3 exp',
+          icon: "success",
+          iconColor: "white",
+          toast: true,
+          position: "top",
+          background: "#44b348",
+          showConfirmButton: false,
+          timer: 1500,
+        })
           this.comment = null
           this.attachment = []
           this.loadSaveCommentStatus = false
