@@ -81,7 +81,7 @@
           <v-card class="mx-auto" max-width="100%">
             <v-card-text>
               <div class="addTopic">
-                  <v-btn class="my-3" color="success" @click="toCreateTopic()">สร้างกิจกรรม</v-btn>
+                  <v-btn class="my-3" color="success" @click="toCreateTopic()">สร้างกระทู้</v-btn>
               </div>
                 <v-chip-group
                   v-model="neighborhoods"
@@ -139,7 +139,7 @@
                   @change="query()"
                 />
                 <v-select
-                  style="width: 10px;"
+                  style="width: 10%;"
                   :items="sortOrderItems"
                   label="เรียงลำดับ"
                   dense

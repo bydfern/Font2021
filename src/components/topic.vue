@@ -443,7 +443,7 @@
               throw { messages: 'ลบกระทู้ไม่สำเร็จ' }
             }
             this.$router.replace({ name: 'home' })
-            this.$swal('สำเร็จ', 'สร้างกระทู้สำเร็จ', 'success')
+            this.$swal('สำเร็จ', 'ลบกระทู้สำเร็จ', 'success')
           }
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message

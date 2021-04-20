@@ -75,6 +75,11 @@
           <!-- <v-date-picker v-model="startDate" />
           <v-date-picker class="mx-5" v-model="endDate" /> -->
           <v-text-field label="จำนวนคนที่รับ" v-model="totalRegister"></v-text-field>
+          <v-select
+            :items="ranksItem"
+            item-value="value"
+            v-model="allowRank"
+          />
           <v-file-input
             accept="image/*"
             placeholder="เลือกรูปโปสเตอร์"
@@ -82,8 +87,10 @@
             v-model="imageData"
             show-size="true"
             v-if="!posterData.posterUrl"
+            :loading="loadPoster"
+            :disabled="loadPoster"
           >
-            <v-icon @click="savePoster()" slot="append" color="success" :loading="loadPoster">mdi-plus-circle</v-icon>
+            <v-icon @click="savePoster()" slot="append" color="success" :disabled="loadPoster">mdi-plus-circle</v-icon>
           </v-file-input>
           <div>
             <center>
@@ -173,7 +180,8 @@
   import menuBar from './menu-bar'
   import moment from 'moment'
   import firebase from 'firebase'
-import Axios from 'axios'
+  import Axios from 'axios'
+  import Helper from '../helper/helper'
 
   export default {
     components: {
@@ -181,6 +189,7 @@ import Axios from 'axios'
     },
     data() {
       return {
+        helper: new Helper(),
         date: new Date().toISOString().substr(0, 10),
         menu: false,
         menu2: false,
@@ -201,14 +210,29 @@ import Axios from 'axios'
           { text: 'นอกสถานที่', value: 0 },
           { text: 'ออนไลน์', value: 1 }
         ],
+        ranksItem: [
+          { text: 'นักเรียนใหม่', value: 0 },
+          { text: 'รุ่นพี่', value: 600 },
+          { text: 'ครูฝึกสอน', value: 1500 },
+          { text: 'อาจารย์', value: 3000 },
+          { text: 'ศาสตราจารย์', value: 5000 },
+          { text: 'อธิการบดี', value: 150000 },
+        ],
+        allowRank: 0,
         email: sessionStorage.getItem('email'),
         totalRegister: 20
       }
     },
     async created () {
       await this.getEvent()
+      this.filterRank()
     },
     methods: {
+      filterRank() {
+        const myRank = this.helper.showRank(Number(sessionStorage.getItem('exp')))
+        const rankIndex = this.ranksItem.findIndex(item => item.text === myRank)
+        this.ranksItem = this.ranksItem.slice(0, rankIndex+1)
+      },
       async getEvent() {
         try {
           const { data: event } = await Axios({
@@ -220,8 +244,8 @@ import Axios from 'axios'
           }
           this.name = event.name
           this.detail = event.detail
-          this.startDate = event.startDate
-          this.endDate = event.endDate
+          this.startDate = moment(event.startDate).format('YYYY-MM-DD')
+          this.endDate = moment(event.endDate).format('YYYY-MM-DD')
           this.content = event.contents
           this.posterData = {
             posterUrl: event.posterUrl,
@@ -230,6 +254,7 @@ import Axios from 'axios'
           this.typeEvent = event.typeEvent
           this.location = event.location
           this.totalRegister = event.totalRegister
+          this.allowRank = event.allowRank
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
@@ -246,6 +271,7 @@ import Axios from 'axios'
           this.posterData.posterName = name
           this.loadStatus = false
           this.imageData = null
+          this.loadPoster = false
         }
       },
       addTextContent() {

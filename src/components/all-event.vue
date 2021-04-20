@@ -72,7 +72,7 @@
                   @change="query()"
                 />
                 <v-select
-                  style="width: 10px;"
+                  style="width: 10%;"
                   :items="sortOrderItems"
                   label="เรียงลำดับ"
                   dense

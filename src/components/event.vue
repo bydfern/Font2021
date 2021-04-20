@@ -10,6 +10,7 @@
           <h3>{{event.name}}</h3>
           <span class="mt-3">{{event.detail}}</span>
           <span>วันที่ {{formatDate(event.startDate)}} ถึง {{formatDate(event.endDate)}}</span>
+          <span>จำกัดอันดับ {{helper.showRank(event.allowRank)}} ขึ้นไป</span>
           <span>จำนวนผู้ติดตาม: {{event.following.length}}</span>
           <span>จำนวนผู้เข้าร่วม: {{totalAccept}} / {{event.totalRegister || 0}}</span>
           <v-btn
@@ -328,6 +329,9 @@ import Helper from '../helper/helper'
       },
       async registerEvent() {
         try {
+          if (this.event.allowRank > Number(sessionStorage.getItem('exp'))) {
+            throw { messages: 'อันดับของท่านไม่เพียงพอ' }
+          }
           const { isConfirmed, value } = await this.$swal({
             icon: 'info',
             input: 'textarea',
@@ -358,7 +362,7 @@ import Helper from '../helper/helper'
               throw { messages: 'สมัครเข้าร่วมกิจกรรมล้มเหลวกรุณาลองใหม่อีกครั้ง' }
             }
             this.statusRegister = 2
-            this.myRegister = result
+            this.myRegister = result.data
             this.$swal('สำเร็จ', 'สมัครเข้าร่วมกิจกรรมสำเร็จ', 'success')
           }
         } catch (error) {
