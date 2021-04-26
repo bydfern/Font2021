@@ -45,11 +45,11 @@
         <v-col cols="9">
           <v-row>
             <v-col cols="12">
-              <v-carousel height="400" class="rounded-card">
+              <v-carousel height="400" style="max-width: 1340px;" class="rounded-card">
                 <v-carousel-item
                   v-for="(item, i) in event"
                   :key="i"
-                  :src="item.posterUrl"
+                  :src="item.coverUrl"
                   reverse-transition="fade-transition"
                   transition="fade-transition"
                   @click="$router.push(`/event/${item._id}`)"
@@ -81,7 +81,7 @@
           <v-card class="mx-auto" max-width="100%">
             <v-card-text>
               <div class="addTopic">
-                  <v-btn class="my-3" color="success" @click="toCreateTopic()">สร้างกระทู้</v-btn>
+                <v-btn class="my-3" color="success" @click="toCreateTopic()">สร้างกระทู้</v-btn>
               </div>
                 <v-chip-group
                   v-model="neighborhoods"
@@ -273,10 +273,9 @@ export default {
     async getEvent3() {
       const { data: { data: event } } = await Axios({
         method: "GET",
-        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?endDate[$gte]=${moment().toString()}&$limit=5&$sort[following]=-1`,
-      });
-      event.splice(3, Math.abs(5 - event.length))
-      this.event = event;
+        url: `${process.env.VUE_APP_SERVER_BASE_URL}/events?endDate[$gte]=${moment().toString()}&$limit=3&$sort[totalFollowing]=-1`,
+      })
+      this.event = event
     },
     async getFollowedEvents() {
       const { data: { data: events } } = await Axios({
@@ -337,5 +336,8 @@ export default {
   .addTopic {
     display: flex;
     flex-direction: row-reverse;
+  }
+  .v-responsive__content {
+    max-width: 100px;
   }
 </style>

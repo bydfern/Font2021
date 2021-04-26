@@ -4,7 +4,7 @@
     <div class="container">
       <div class="title_1">
         <div class="poster">
-          <img :src="event.posterUrl" width="200" height="250px">
+          <img :src="event.posterUrl" width="200px" height="250px">
         </div>
         <div class="datail mx-5">
           <h3>{{event.name}}</h3>
@@ -22,7 +22,6 @@
                 mdi mdi-account-multiple-plus
               </v-icon>
           </v-btn>
-
           <v-btn
               icon
               color="red"
@@ -35,6 +34,9 @@
         </div>
       </div>
       <hr class="my-5">
+      <div class="cover">
+        <img :src="event.coverUrl" width="500px" height="250px">
+      </div>
       <div v-for="(item, index) in event.contents" :key="index">
         <p v-if="item.type == 'text'">{{item.value}}</p>
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
@@ -316,15 +318,20 @@ import Helper from '../helper/helper'
         if (this.isFollowed) {
           const index = this.event.following.findIndex(id => id === sessionStorage.getItem('memberId'))
           this.event.following.splice(index, 1)
+          this.event.totalFollowing--
           this.isFollowed = false
         } else {
           this.event.following.push(sessionStorage.getItem('memberId'))
+          this.event.totalFollowing++
           this.isFollowed = true
         }
         Axios({
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/events/${this.$route.params.id}`,
-          data: { following: this.event.following }
+          data: {
+            following: this.event.following,
+            totalFollowing: this.event.totalFollowing
+          }
         })
       },
       async registerEvent() {
@@ -468,5 +475,9 @@ import Helper from '../helper/helper'
   .getTicket {
     display: flex;
     flex-direction: row-reverse;
+  }
+  .cover{
+    display: flex;
+    justify-content: center;
   }
 </style>
