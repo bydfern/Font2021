@@ -76,11 +76,31 @@
               <a v-if="item.type == 'file' && item.value != ''" :href="item.value">{{item.name}}</a>
               <v-btn v-if="item.type == 'file' && item.value != ''" color="error" x-small @click="deleteFile(item, index)" class="my-2 mx-2">X</v-btn>
             </div>
+            <div v-if="item.type === 'poll'" class="poll">
+              <h4>โพลล์</h4>
+              <v-textarea
+                placeholder="คำถาม"
+                v-model="content[index].question"
+                clearable
+                auto-grow
+                rows="1"
+              />
+              <div class="answers" v-for="(answer, i) in item.answers" :key="i">
+                <v-text-field class="mt-0 pt-0" v-model="content[index].answers[i].text">
+                  <v-icon slot="prepend" color="error" @click="content[index].answers.splice(i, 1)">mdi-minus-circle</v-icon>
+                </v-text-field>
+              </div>
+              <div class="mb-5">
+                <v-btn class="mx-3" small color="success" @click="addAnswer(index)">เพิ่มคำตอบ</v-btn>
+                <v-btn small color="error" @click="content.splice(index, 1)">ลบโพลล์</v-btn>
+              </div>
+            </div>
           </div>
           <div style="width: 100%;">
             <v-icon @click="addTextContent()" color="blue">mdi-plus-circle</v-icon>
             <v-icon class="mx-3" @click="addImageContent()" color="blue">mdi-image-plus</v-icon>
             <v-icon @click="addFileContent()" color="blue">mdi-file-plus</v-icon>
+            <v-icon @click="addPollContent()" class="ml-3" color="blue">mdi-poll-box</v-icon>
           </div>
         </v-card-text>
         <v-card-actions style="width: 100%;">
@@ -148,6 +168,18 @@
           fileData: null,
           loadStatus: false
         })
+      },
+      addPollContent() {
+        this.content.push({
+          type: 'poll',
+          question: 'คำถาม',
+          answers: [
+            { text: 'คำตอบ', answered: [] }
+          ]
+        })
+      },
+      addAnswer(index) {
+        this.content[index].answers.push({ text: 'คำตอบ', answered: [] })
       },
       async saveImage(item, index) {
         this.content[index].loadStatus = true
@@ -240,5 +272,9 @@
   }
   .v-card__actions {
     flex-direction: row-reverse;
+  }
+  .answers {
+    display: flex;
+    flex-direction: row;
   }
 </style>

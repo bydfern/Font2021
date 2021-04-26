@@ -13,6 +13,13 @@
         <p v-if="item.type == 'text'">{{item.value}}</p>
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
         <v-icon v-if="item.type == 'file'">mdi-file-document-outline</v-icon><a v-if="item.type == 'file'" :href="item.value">{{item.name}}</a>
+        <div class="poll" v-if="item.type == 'poll' && !item.isAnswered">
+          <span><b>{{item.question}}</b></span>
+          <v-radio-group v-model="topic.content[index].myAnswer">
+            <v-radio v-for="(answer, i) in item.answers" :key="i" :label="answer.text"></v-radio>
+          </v-radio-group>
+          <v-btn class="mb-5" color="success" small rounded @click="answer(index)">ส่งคำตอบ</v-btn>
+        </div>
       </div>
       <hr class="my-5">
       <div class="profile">
@@ -171,6 +178,19 @@
               rank: this.helper.showRank(memberData.exp),
               ...comment
             }
+          })
+          const id = sessionStorage.getItem('memberId')
+          topic.content.map(item => {
+            if (item.type == 'poll') {
+              item.answers.map(answer => {
+                const isAnswer = answer.answered.includes(x => x == id)
+                if (!item.isAnswered) {
+                  item.isAnswered = isAnswer
+                }
+              })
+            }
+
+            return item
           })
           topic.comments = comments
           this.topic = topic
@@ -445,6 +465,19 @@
             this.$router.replace({ name: 'home' })
             this.$swal('สำเร็จ', 'ลบกระทู้สำเร็จ', 'success')
           }
+        } catch (error) {
+          const message = (error.messages) ? error.messages : error.message
+          this.$swal('ข้อผิดพลาด',  message, 'error')
+        }
+      },
+      async answer(index) {
+        try {
+          const { myAnswer, ...pollData } = this.topic.content[index]
+          if (myAnswer == undefined) {
+            throw { messages: 'กรุณาเลือกคำตอบ' }
+          }
+          pollData.answers[myAnswer].answered.push(sessionStorage.getItem('memberId'))
+          this.topic.content[index] = pollData
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด',  message, 'error')

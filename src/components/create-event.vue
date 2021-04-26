@@ -83,7 +83,7 @@
           <v-file-input
             accept="image/*"
             placeholder="เลือกรูปโปสเตอร์"
-            label="รูปภาพ*"
+            label="รูปภาพ"
             v-model="imageData"
             show-size="true"
             v-if="!posterData.posterUrl"
@@ -98,6 +98,24 @@
             </center>
           </div>
           <v-btn v-if="posterData.posterUrl" color="error" block @click="deletePoster()" class="mb-3">X</v-btn>
+          <v-file-input
+            accept="image/*"
+            placeholder="เลือกรูปปก"
+            label="รูปภาพ"
+            v-model="imageCoverData"
+            show-size="true"
+            v-if="!coverData.coverUrl"
+            :loading="loadCover"
+            :disabled="loadCover"
+          >
+            <v-icon @click="saveCover()" slot="append" color="success" :disabled="loadCover">mdi-plus-circle</v-icon>
+          </v-file-input>
+          <div>
+            <center>
+              <img :src="coverData.coverUrl" v-if="coverData.coverUrl" width="500px" height="250px">
+            </center>
+          </div>
+          <v-btn v-if="coverData.coverUrl" color="error" block @click="deleteCover()" class="mb-3">X</v-btn>
           <div id="contain" v-for="(item, index) in content" :key="index">
             <v-textarea
               placeholder="ข้อความ"
@@ -198,11 +216,17 @@
         startDate: moment().format('YYYY-MM-DD'),
         endDate: moment().format('YYYY-MM-DD'),
         imageData: null,
+        imageCoverData: null,
         loadPoster: false,
+        loadCover: false,
         content: [],
         posterData: {
           posterUrl: '',
           posterName: ''
+        },
+        coverData: {
+          coverUrl: '',
+          coverName: ''
         },
         typeEvent: 0,
         location: '',
@@ -243,6 +267,19 @@
           this.loadStatus = false
           this.imageData = null
           this.loadPoster = false
+        }
+      },
+      async saveCover() {
+        this.loadCover = true
+        const name = Date.now().toString()
+        const imageRef = firebase.storage().ref(this.email).child('event').child(name).put(this.imageCoverData)
+        const uploadComplete = await Promise.all([imageRef])
+        if (uploadComplete) {
+          this.coverData.coverUrl = await imageRef.snapshot.ref.getDownloadURL()
+          this.coverData.coverName = name
+          this.loadStatus = false
+          this.imageCoverData = null
+          this.loadCover = false
         }
       },
       addTextContent() {
@@ -302,10 +339,21 @@
         firebase.storage().ref(this.email).child('event').child(item.name).delete()
       },
       async deletePoster() {
-        firebase.storage().ref(this.email).child('event').child(this.posterData.posterName).delete()
+        if (this.posterData.posterName !== 'default') {
+          firebase.storage().ref(this.email).child('event').child(this.posterData.posterName).delete()
+        }
         this.posterData = {
           posterUrl: '',
           posterName: ''
+        }
+      },
+      async deleteCover() {
+        if (this.coverData.coverName !== 'default') {
+          firebase.storage().ref(this.email).child('event').child(this.posterData.posterName).delete()
+        }
+        this.coverData = {
+          coverUrl: '',
+          coverName: ''
         }
       },
       cancel() {
@@ -318,11 +366,19 @@
       },
       async save() {
         try {
-          if (!this.posterData.posterUrl || !this.name || (!this.typeEvent && !this.location)) {
+          if (!this.name || (!this.typeEvent && !this.location)) {
             throw { messages: 'กรุณากรอกข้อมูลให้ครบ' }
           }
           if (this.startDate > this.endDate) {
             throw { messages: 'วันที่เริ่มต้องน้อยกว่าวันสิ้นสุด' }
+          }
+          if (!this.posterData.posterUrl) {
+            this.posterData.posterUrl = 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/NEW%20EVENT%20(1).png?alt=media&token=ec2eea93-1d9c-4e87-8c7f-f9e22dfab062'
+            this.posterData.posterName = 'default'
+          }
+          if (!this.coverData.coverUrl) {
+            this.coverData.coverUrl = 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/NEW%20EVENT!.png?alt=media&token=8813c2d4-b201-43dd-a136-a4a5945f7dc4'
+            this.coverData.coverName = 'default'
           }
           const payload = {
             name: this.name,
@@ -333,6 +389,8 @@
             endDate: this.endDate,
             posterUrl: this.posterData.posterUrl,
             posterName: this.posterData.posterName,
+            coverUrl: this.coverData.coverUrl,
+            coverName: this.coverData.coverName,
             contents: this.content,
             memberId: sessionStorage.getItem('memberId'),
             totalRegister: this.totalRegister,

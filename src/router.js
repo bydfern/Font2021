@@ -15,6 +15,7 @@ import CreateEvent from './components/create-event.vue'
 import Event from './components/event.vue'
 import profile from './components/profile.vue'
 import EditEvent from './components/edit-event.vue'
+import Welcome from './components/welcome.vue'
 
 
 Vue.use(Router)
@@ -23,8 +24,13 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      name: 'login',
+      name: 'welcome',
       path: '/',
+      component: Welcome
+    },
+    {
+      name: 'login',
+      path: '/login',
       component: Login     
     },
     {
