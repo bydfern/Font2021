@@ -7,7 +7,7 @@
         <v-col cols="3">
           <br>
           <v-card>
-            <v-img height="150px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/workplace-with-smartphone-laptop-black-table-top-view-copyspace-background.jpg?alt=media&token=edabe94a-a82e-4419-b05f-bfc30f591c68" >
+            <v-img height="180px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/workplace-with-smartphone-laptop-black-table-top-view-copyspace-background.jpg?alt=media&token=edabe94a-a82e-4419-b05f-bfc30f591c68" >
               <v-card-title class="white--text mt-8">
                 <v-avatar size="56">
                   <img
@@ -45,7 +45,7 @@
         <v-col cols="9">
           <v-row>
             <v-col cols="12">
-              <v-carousel height="400" style="max-width: 1340px;" class="rounded-card">
+              <v-carousel height="350px" style="max-width: 1340px;" class="rounded-card">
                 <v-carousel-item
                   v-for="(item, i) in event"
                   :key="i"
@@ -300,15 +300,8 @@ export default {
     max-width: 1000px;
   }
   .bodyy {
-    display: flex;
     font-family: 'Athiti', sans-serif;
     color: #fff;
-    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
-    max-height: 100%;
-    max-width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     padding: 0px 50px 0px 50px;
   }
   .dataQuery {
@@ -327,11 +320,6 @@ export default {
   }
   .rounded-card {
     border-radius: 10px;
-  }
-  .bg{
-    background-color: #fff;
-    width: 100%;
-    height: 100%;
   }
   .addTopic {
     display: flex;

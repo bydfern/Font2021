@@ -497,6 +497,7 @@
   .container {
     max-width: 800px;
     margin: auto;
+    background-color: #fff;
   }
   .profile {
     display: flex;
