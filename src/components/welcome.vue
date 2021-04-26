@@ -7,7 +7,7 @@
     background-size: cover;
     background-position: center center;" :style="{ 'background-image': 'url(' + image + ')' }">
 
-      <v-btn width="10%" class="startBtn" @click="$router.push({ name: 'login' })">เริ่มต้น</v-btn>
+      <v-btn width="10%" outlined color="black" class="startBtn" @click="$router.push({ name: 'login' })">เริ่มต้น</v-btn>
     </div>
 </div>
 <!-- <div class="circular" v-bind:style="{ 'background-image': 'url(' + image + ')' }"></div> -->
