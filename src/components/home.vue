@@ -1,6 +1,6 @@
 <template>
   <div class = "front">
-    <menu-bar />
+    <menu-bar/>
     <div class="bodyy">
       <!-- <div class="container"> -->
       <v-row>
@@ -42,7 +42,7 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="13">
+        <v-col cols="9">
           <v-row>
             <v-col cols="12">
               <v-carousel height="400" class="rounded-card">
@@ -88,19 +88,18 @@
                   column
                   multiple
                   style="text-align: center; max-width: 80% "
-
                 >
                 <!-- text-color="white" -->
-                <v-chip  outlined color="pink" @click="query('สุขภาพ')"><v-icon left>mdi-weight-lifter</v-icon>   สุขภาพ </v-chip>
-                <v-chip  outlined color="red"  @click="query('วิทยาศาสตร์')"><v-icon left>mdi-battlenet</v-icon>  วิทยาศาสตร์ </v-chip>
-                <v-chip  outlined color="lime darken-1" @click="query('คณิตศาสตร์')"><v-icon left>mdi-brain</v-icon>  คณิตศาสตร์ </v-chip>
-                <v-chip  outlined color="orange accent-4" @click="query('สังคม')"><v-icon left>mdi-human-greeting-proximity</v-icon>  สังคม </v-chip>
-                <v-chip  outlined color="cyan lighten-2" @click="query('ศิลปะ')"><v-icon left>mdi-palette</v-icon>  ศิลปะ </v-chip>
-                <v-chip  outlined color="light-blue" @click="query('เทคโนโลยี')"><v-icon left>mdi-monitor</v-icon>  เทคโนโลยี </v-chip>
-                <v-chip  outlined color="teal accent-3" @click="query('เศรษฐศาสตร์')"><v-icon left>mdi-finance</v-icon>  เศรษฐศาสตร์ </v-chip>
-                <v-chip  outlined color="cyan" @click="query('ภาษา')"><v-icon left>mdi-message-text-outline</v-icon>  ภาษา </v-chip>
-                <v-chip  outlined color="purple lighten-2" @click="query('แฟชั่น')"><v-icon left>mdi-cards-heart</v-icon>  แฟชั่น </v-chip>
-                <v-chip   outlined color="blue-grey darken-2" @click="query('อื่นๆ')"><v-icon left>mdi-dots-horizontal</v-icon>  อื่นๆ </v-chip>
+                <v-chip  outlined color="black" @click="query('สุขภาพ')"><v-icon left color="pink">mdi-weight-lifter</v-icon>   สุขภาพ </v-chip>
+                <v-chip  outlined color="black"  @click="query('วิทยาศาสตร์')"><v-icon left color="red">mdi-battlenet</v-icon>  วิทยาศาสตร์ </v-chip>
+                <v-chip  outlined color="black" @click="query('คณิตศาสตร์')"><v-icon left color="lime darken-1">mdi-brain</v-icon>  คณิตศาสตร์ </v-chip>
+                <v-chip  outlined color="black" @click="query('สังคม')"><v-icon left color="orange accent-4">mdi-human-greeting-proximity</v-icon>  สังคม </v-chip>
+                <v-chip  outlined color="black" @click="query('ศิลปะ')"><v-icon left color="cyan lighten-2">mdi-palette</v-icon>  ศิลปะ </v-chip>
+                <v-chip  outlined color="black" @click="query('เทคโนโลยี')"><v-icon left color="light-blue">mdi-monitor</v-icon>  เทคโนโลยี </v-chip>
+                <v-chip  outlined color="black" @click="query('เศรษฐศาสตร์')"><v-icon left color="teal accent-3" >mdi-finance</v-icon>  เศรษฐศาสตร์ </v-chip>
+                <v-chip  outlined color="black" @click="query('ภาษา')"><v-icon left color="cyan">mdi-message-text-outline</v-icon>  ภาษา </v-chip>
+                <v-chip  outlined color="black" @click="query('แฟชั่น')"><v-icon left color="purple lighten-2">mdi-cards-heart</v-icon>  แฟชั่น </v-chip>
+                <v-chip  outlined color="black" @click="query('อื่นๆ')"><v-icon left color="blue-grey darken-2">mdi-dots-horizontal</v-icon>  อื่นๆ </v-chip>
               </v-chip-group>
             </v-card-text>
             <v-card-title>กระทู้ทั้งหมด</v-card-title>
@@ -306,7 +305,8 @@ export default {
     font-family: 'Athiti', sans-serif;
     color: #fff;
     background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/top-view-person-writing-laptop-with-copy-space.jpg?alt=media&token=d5ba4445-f44b-4562-a39f-08b616965a20");
-    min-height: 100%;
+    max-height: 100%;
+    max-width: 100%;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
