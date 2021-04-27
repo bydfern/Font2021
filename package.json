@@ -15,6 +15,7 @@
     "vue": "^2.6.11",
     "vue-router": "^3.4.9",
     "vue-sweetalert2": "^4.1.1",
+    "vuebars": "^0.1.8",
     "vuetify": "^2.3.17",
     "vuex": "^3.4.0"
   },

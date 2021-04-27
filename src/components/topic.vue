@@ -13,12 +13,19 @@
         <p v-if="item.type == 'text'">{{item.value}}</p>
         <img v-if="item.type == 'image'" :src="item.value" width="100%;">
         <v-icon v-if="item.type == 'file'">mdi-file-document-outline</v-icon><a v-if="item.type == 'file'" :href="item.value">{{item.name}}</a>
-        <div class="poll" v-if="item.type == 'poll' && !item.isAnswered">
+        <div class="poll" v-if="item.type == 'poll'">
           <span><b>{{item.question}}</b></span>
-          <v-radio-group v-model="topic.content[index].myAnswer">
+          <v-radio-group v-if="!item.isAnswered" v-model="topic.content[index].myAnswer">
             <v-radio v-for="(answer, i) in item.answers" :key="i" :label="answer.text"></v-radio>
           </v-radio-group>
-          <v-btn class="mb-5" color="success" small rounded @click="answer(index)">ส่งคำตอบ</v-btn>
+          <v-btn v-if="!item.isAnswered" class="mb-5" color="success" small rounded @click="answer(index)" :loading="item.loading">ส่งคำตอบ</v-btn>
+          <bars
+            :data="item.data"
+            :labelData="item.label"
+            :labelRotate="0"
+            :labelSize="0.4"
+            :gradient="['#6fa8dc', '#42b983']">
+          </bars>
         </div>
       </div>
       <hr class="my-5">
@@ -118,6 +125,7 @@
 </template>
 
 <script>
+  /* eslint-disable no-unused-vars */
   import Axios from 'axios'
   import MenuBar from './menu-bar.vue'
   import firebase from 'firebase'
@@ -180,12 +188,17 @@
             }
           })
           const id = sessionStorage.getItem('memberId')
-          topic.content.map(item => {
+          topic.content = topic.content.map(item => {
             if (item.type == 'poll') {
+              item.loading = false
+              item.data = [0]
+              item.label = ['start']
               item.answers.map(answer => {
-                const isAnswer = answer.answered.includes(x => x == id)
+                const isAnswer = answer.answered.find(x => x == id)
+                item.data.push(answer.answered.length)
+                item.label.push(answer.text)
                 if (!item.isAnswered) {
-                  item.isAnswered = isAnswer
+                  item.isAnswered = Boolean(isAnswer)
                 }
               })
             }
@@ -472,12 +485,24 @@
       },
       async answer(index) {
         try {
-          const { myAnswer, ...pollData } = this.topic.content[index]
-          if (myAnswer == undefined) {
+          this.topic.content[index].loading = true
+          const pollData = this.topic.content[index]
+          if (pollData.myAnswer == undefined) {
             throw { messages: 'กรุณาเลือกคำตอบ' }
           }
-          pollData.answers[myAnswer].answered.push(sessionStorage.getItem('memberId'))
+          pollData.answers[pollData.myAnswer].answered.push(sessionStorage.getItem('memberId'))
+          let content = this.topic.content
+          const { myAnswer, loading, isAnswered, ...payload } = pollData
+          content[index] = payload
+          Axios({
+            method: 'PATCH',
+            url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.$route.params.id}`,
+            data: { content: content }
+          })
           this.topic.content[index] = pollData
+          this.topic.content[index].isAnswered = true
+          this.topic.content[index].loading = false
+          this.topic.content[index].data[pollData.myAnswer + 1]++
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด',  message, 'error')

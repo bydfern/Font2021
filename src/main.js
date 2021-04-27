@@ -7,9 +7,11 @@ import firebase from 'firebase/app'
 import { config } from './firebase/config'
 import VueSweetAlert2 from 'vue-sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import Bars from 'vuebars'
 
 Vue.config.productionTip = false
 Vue.use(VueSweetAlert2)
+Vue.use(Bars)
 firebase.initializeApp(config)
 
 new Vue({
