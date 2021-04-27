@@ -22,7 +22,7 @@
         el: "#app",
         data() {
             return {
-                image: 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/main.png?alt=media&token=447204d1-483d-4ff9-b2d1-07eabeaf05cd'
+                image: 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/wallpaper.png?alt=media&token=e152f5e1-1b4e-4390-b45d-f490572f6f3a'
                 
             };
         }

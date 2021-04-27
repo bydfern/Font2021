@@ -12,7 +12,7 @@
       <v-row>
         <v-col cols="3">
           <v-card>
-            <v-img height="150px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/workplace-with-smartphone-laptop-black-table-top-view-copyspace-background.jpg?alt=media&token=edabe94a-a82e-4419-b05f-bfc30f591c68" >
+            <v-img height="150px" src="https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/5.1.png?alt=media&token=cfa925bd-5b9c-4f4f-910f-44cc90e79776" >
               <v-card-title class="white--text mt-8">
                 <v-avatar size="56">
                   <img

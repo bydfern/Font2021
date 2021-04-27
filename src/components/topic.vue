@@ -42,13 +42,13 @@
         </div>
       </div>
       <hr class="my-7">
-      <h2 class="my-3">ถูกใจ</h2>
+      <!-- <h2 class="my-3">ถูกใจ</h2> -->
       <div class="like">
-        <v-icon large @click="like()" :color="likeColor" >mdi-hand-heart</v-icon>
+        <v-icon large @click="like()" :color="likeColor" >mdi-heart</v-icon>
         <b class="mx-3 pt-2">{{topic.like.length}} คน</b>
       </div>
       <div class="favorite">
-        <h3 class="mt-5">เพิ่มเป็นรายการโปรด</h3>
+        <h4 class="mt-5">เพิ่มเป็นรายการโปรด</h4>
         <v-icon class="mt-4 mx-2" large @click="favorite()" :color="favoriteColor" >mdi-star</v-icon>
       </div>
       <h2 class="my-3">แสดงความคิดเห็น</h2>

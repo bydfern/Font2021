@@ -180,7 +180,7 @@ export default {
 
 
   color: #fff;
-  background-image: url("https://sv1.picz.in.th/images/2021/02/22/oPYWeW.jpg");
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/login3.png?alt=media&token=43bcc1a4-897c-4fc8-a630-3da60c4366c1");
   min-height: 100%;
   background-size: cover;
   background-repeat: no-repeat;

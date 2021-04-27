@@ -377,7 +377,7 @@
             this.posterData.posterName = 'default'
           }
           if (!this.coverData.coverUrl) {
-            this.coverData.coverUrl = 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/NEW%20EVENT!.png?alt=media&token=8813c2d4-b201-43dd-a136-a4a5945f7dc4'
+            this.coverData.coverUrl = 'https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/New%20Event!%20(1).png?alt=media&token=aa9add48-2024-4be3-a242-aac35535f529'
             this.coverData.coverName = 'default'
           }
           const payload = {
