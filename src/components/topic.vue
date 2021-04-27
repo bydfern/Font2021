@@ -20,6 +20,7 @@
           </v-radio-group>
           <v-btn v-if="!item.isAnswered" class="mb-5" color="success" small rounded @click="answer(index)" :loading="item.loading">ส่งคำตอบ</v-btn>
           <bars
+            v-if="item.isAnswered"
             :data="item.data"
             :labelData="item.label"
             :labelRotate="0"
@@ -492,7 +493,7 @@
           }
           pollData.answers[pollData.myAnswer].answered.push(sessionStorage.getItem('memberId'))
           let content = this.topic.content
-          const { myAnswer, loading, isAnswered, ...payload } = pollData
+          const { myAnswer, loading, isAnswered, data, label, ...payload } = pollData
           content[index] = payload
           Axios({
             method: 'PATCH',
