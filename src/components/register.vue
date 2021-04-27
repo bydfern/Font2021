@@ -15,8 +15,8 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="date"
-                label="Birthday date"
+                v-model="birthday"
+                label="วันเกิด"
                 prepend-icon="mdi-calendar"
                 readonly
                 v-bind="attrs"
@@ -25,7 +25,7 @@
             </template>
             <v-date-picker
               ref="picker"
-              v-model="date"
+              v-model="birthday"
               :max="new Date().toISOString().substr(0, 10)"
               min="1950-01-01"
               @change="save"
@@ -74,7 +74,6 @@
       return {
         date: null,
         menu: false,
-
         datePicker: false,
         firstName: null,
         lastName: null,
