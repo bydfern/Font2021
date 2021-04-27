@@ -5,7 +5,33 @@
         <v-card-text>
           <v-text-field label="ชื่อ*" :rules="[rules.require]" v-model="firstName" prepend-icon="mdi-account-circle" />
           <v-text-field label="นามสกุล*" :rules="[rules.require]" v-model="lastName" prepend-icon="mdi-account-circle" />
-          <v-text-field label="วันเกิด" v-model="birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" />
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="date"
+                label="Birthday date"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              ref="picker"
+              v-model="date"
+              :max="new Date().toISOString().substr(0, 10)"
+              min="1950-01-01"
+              @change="save"
+            ></v-date-picker>
+          </v-menu>
+          <!-- <v-text-field label="วันเกิด" v-model="birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" /> -->
           <v-text-field label="มหาวิทยาลัย" v-model="university" prepend-icon="mdi-school" />
           <v-text-field label="คณะ" v-model="faculty" prepend-icon="mdi-city" />
           <v-text-field label="สาขา" v-model="department" prepend-icon="mdi-home-city" />
@@ -46,6 +72,9 @@
   export default {
     data() {
       return {
+        date: null,
+        menu: false,
+
         datePicker: false,
         firstName: null,
         lastName: null,
@@ -131,7 +160,15 @@
       },
       setImageData(event) {
         this.imageData = event.target.file[0]
-      }
+      },
+      save (date) {
+        this.$refs.menu.save(date)
+      },
+    },
+    watch: {
+      menu (val) {
+        val && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+      },
     },
   }
 </script>
@@ -142,35 +179,20 @@
   .container {
     padding-top: 80px;
     height: 100%;
+    width: 800px;
+    max-width: 80%;
     text-align: center;
-    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
-    /* background-color: #ededed; */
-    max-width: 100%;
-    min-height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+    bottom: 20%;
   }
 
-  .v-card {
-    max-width: 800px;
-    top: 45%;
-    transform: translate(0, -50%);
-  }
+  
 
   .bodyy {
     padding-top: 80px;
     display: flex;
     font-family: "lato", sans-serif;
     color: #fff;
-    background-image: url("https://firebasestorage.googleapis.com/v0/b/member-educate-space.appspot.com/o/flat-lay-stationary-arrangement-desk-with-copy-space-coffee.jpg?alt=media&token=484fbf44-d474-4262-ba03-f6d39fb4a731");
-    min-height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     font-family: 'Athiti', sans-serif;
-  
-
     padding: 0px 50px 0px 50px;
   }
 

@@ -8,9 +8,9 @@
           <v-simple-table>
             <thead>
               <tr>
-                <th style="width: 10%;">ประเภทรายงาน</th>
+                <th style="width: 20%;">ประเภทรายงาน</th>
                 <th>เหตุผล</th>
-                <th style="width: 10%"></th>
+                <th style="width: 20%"></th>
               </tr>
             </thead>
             <tbody>
