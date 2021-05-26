@@ -162,14 +162,13 @@
                   <tr
                     v-for="(topic, index) in topics"
                     :key="index"
-                    @click="$router.push(`/topic/${topic._id}`)"
                   >
-                    <td>{{ topic.title }}</td>
-                    <td>{{ topic.subject }}</td>
-                    <td>{{topic.type}}</td>
-                    <td>{{ topic.like.length }}</td>
-                    <td>{{ topic.memberEmail }}</td>
-                    <td>{{ formatDate(topic.createdAt) }}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.title }}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.subject }}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{topic.type}}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.like.length }}</td>
+                    <td @click="$router.push(`/profile/${topic.memberId}`)">{{ topic.memberEmail }}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{ formatDate(topic.createdAt) }}</td>
                   </tr>
                 </tbody>
               </v-simple-table>

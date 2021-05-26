@@ -232,7 +232,7 @@
             if (!deletedMember) {
               throw { messages: 'ไม่สามารถลบบัญชีผู้ใช้ได้' }
             }
-            await firebase.auth().currentUser.delete()
+            firebase.auth().currentUser.delete()
             this.$swal({
               text: 'ลบบัญชีสำเร็จ',
               icon: 'success',
@@ -243,6 +243,7 @@
               showConfirmButton: false,
               timer: 1500
             })
+            sessionStorage.clear()
             this.$router.replace({ name: 'login' })
           }
         } catch (error) {
@@ -303,6 +304,7 @@
               url: `${process.env.VUE_APP_SERVER_BASE_URL}/send-email`,
               data: {
                 email: register.registerEmail,
+                subject: 'การตอบรับคำขอเข้าร่วมกิจกรรม',
                 message: `เจ้าของกิจกรรม ${register.eventName} ได้ปฎิเสธการเข้าร่วมของคุณ`
               }
             })
@@ -353,6 +355,7 @@
               url: `${process.env.VUE_APP_SERVER_BASE_URL}/send-email`,
               data: {
                 email: register.registerEmail,
+                subject: 'การตอบรับคำขอเข้าร่วมกิจกรรม',
                 message: `เจ้าของกิจกรรม ${register.eventName} ได้อนุมัติให้คุณเข้าร่วมกิจกรรมแล้ว`
               }
             })

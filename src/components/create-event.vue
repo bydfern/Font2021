@@ -76,6 +76,7 @@
           <v-date-picker class="mx-5" v-model="endDate" /> -->
           <v-text-field label="จำนวนคนที่รับ" v-model="totalRegister"></v-text-field>
           <v-select
+            label="อันดับขั้นต่ำที่เข้าร่วมได้"
             :items="ranksItem"
             item-value="value"
             v-model="allowRank"

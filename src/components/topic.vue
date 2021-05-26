@@ -32,12 +32,12 @@
       <hr class="my-5">
       <div class="profile">
         <div class="profile-image mx-3">
-          <img :src="member.profileUrl" width="100%" height="100%">
+          <img @click="$router.push(`/profile/${member._id}`)" :src="member.profileUrl" width="100%" height="100%">
         </div>
         <div class="profile-contact">
-          <span>{{member.email}}</span>
+          <span @click="$router.push(`/profile/${member._id}`)">{{member.email}}</span>
           <hr>
-          <span>{{member.firstName}} {{member.lastName}}</span>
+          <span @click="$router.push(`/profile/${member._id}`)">{{member.firstName}} {{member.lastName}}</span>
           <span>{{member.rank}}</span>
         </div>
       </div>

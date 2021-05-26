@@ -13,7 +13,7 @@
         <v-file-input v-if="imageStatus" accept="image/*" placeholder="เลือกรูป" label="รูปโปรไฟล์" prepend-icon="mdi-camera" v-model="imageData" show-size="true">
         </v-file-input>
         <v-btn v-if="imageStatus" class="mx-8 mb-3" @click="uploadImage()" :loading="loadImageStatus" :disabled="loadImageStatus" >อัพโหลด</v-btn>
-        <v-text-field label="อีเมล" :rules="[rules.require]" prepend-icon="mdi-email" v-model="profileData.email" @keypress.enter="register()" />
+        <v-text-field label="อีเมล" disabled :rules="[rules.require]" prepend-icon="mdi-email" v-model="profileData.email" @keypress.enter="register()" />
         <v-text-field label="ชื่อ" :rules="[rules.require]" v-model="profileData.firstName" prepend-icon="mdi-account-circle" @keypress.enter="register()" />
         <v-text-field label="นามสกุล" :rules="[rules.require]" v-model="profileData.lastName" prepend-icon="mdi-account-circle" @keypress.enter="register()" />
         <v-text-field label="วันเกิด" v-model="profileData.birthday" @click="datePicker=true" prepend-icon="mdi-cake-variant" @keypress.enter="register()" />
@@ -115,11 +115,15 @@
             if (newPassword.length < 6) {
               throw { message: 'รหัสผ่านน้อยกว่า 6 ตัว' }
             }
-            const updatedPassword = firebase.auth().currentUser.updatePassword(newPassword)
-            if (!updatedPassword) {
-              throw { messgaes: 'กรุณาลองใหม่อีกครั้ง' }
+            try {
+              const updatedPassword = firebase.auth().currentUser.updatePassword(newPassword)
+              if (!updatedPassword) {
+                throw { messgaes: 'กรุณาลองใหม่อีกครั้ง' }
+              }
+              this.$swal('สำเร็จ', 'เปลี่ยนรหัสผ่านสำเร็จ', 'success')
+            } catch (error) {
+              throw { messages: 'กรุณาลองใหม่อีกครั้ง' }
             }
-            this.$swal('สำเร็จ', 'เปลี่ยนรหัสผ่านสำเร็จ', 'success')
           }
         } catch (error) {
           const messages = (error.messages) ? error.messages : error.message

@@ -159,6 +159,7 @@
           this.title = topicData.title
           this.subject = topicData.subject
           this.content = topicData.content
+          this.selectedType = topicData.type
         } catch (error) {
           const message = (error.messages) ? error.messages : error.message
           this.$swal('ข้อผิดพลาด', message, 'error')
