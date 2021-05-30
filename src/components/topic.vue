@@ -45,7 +45,7 @@
       <!-- <h2 class="my-3">ถูกใจ</h2> -->
       <div class="like">
         <v-icon large @click="like()" :color="likeColor" >mdi-heart</v-icon>
-        <b class="mx-3 pt-2">{{topic.like.length}} คน</b>
+        <b class="mx-3 pt-2">{{topic.totalLike}} คน</b>
       </div>
       <div class="favorite">
         <h4 class="mt-5">เพิ่มเป็นรายการโปรด</h4>
@@ -295,9 +295,11 @@
         if (this.topic.like.includes(memberId)) {
           const index = this.topic.like.findIndex(id => id == memberId)
           this.topic.like.splice(index, 1)
+          this.topic.totalLike--
           this.likeColor = 'gray'
         } else {
           this.topic.like.push(memberId)
+          this.topic.totalLike++
           this.likeColor = 'red'
           const exp = Number(sessionStorage.getItem('exp')) + 1
           sessionStorage.setItem('exp', exp)
@@ -320,7 +322,7 @@
         Axios({
           method: 'PATCH',
           url: `${process.env.VUE_APP_SERVER_BASE_URL}/topics/${this.topic._id}`,
-          data: { like: this.topic.like }
+          data: { like: this.topic.like, totalLike: this.topic.totalLike }
         })
       },
       favorite() {

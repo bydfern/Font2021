@@ -166,7 +166,7 @@
                     <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.title }}</td>
                     <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.subject }}</td>
                     <td @click="$router.push(`/topic/${topic._id}`)">{{topic.type}}</td>
-                    <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.like.length }}</td>
+                    <td @click="$router.push(`/topic/${topic._id}`)">{{ topic.totalLike }}</td>
                     <td @click="$router.push(`/profile/${topic.memberId}`)">{{ topic.memberEmail }}</td>
                     <td @click="$router.push(`/topic/${topic._id}`)">{{ formatDate(topic.createdAt) }}</td>
                   </tr>
@@ -214,7 +214,7 @@ export default {
         { text: "เรื่อง", value: "title" },
         { text: "วิชา", value: "subject" },
         { text: "หมวดหมู่", value: "type" },
-        { text: "ถูกใจ", value: "like" },
+        { text: "ถูกใจ", value: "totalLike" },
         { text: "วันที่โพส", value: "createdAt" },
       ],
       sortBy: "createdAt",
